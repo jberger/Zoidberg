@@ -1,0 +1,80 @@
+---
+name: Zoidberg
+version: 0.96
+author:
+  - Jaap Karssenberg <pardus@cpan.org>
+abstract: A modular perl shell
+license: perl
+requires:
+  AutoLoader: 0
+  Cwd: 0
+  Data::Dumper: 0
+  Encode: 0
+  Env: 0
+  Exporter::Tidy: 0
+  File::Glob: 0
+  File::Spec: 0
+  POSIX: 0
+  perl: 5.6.1
+recommends:
+  Env::PS1: 0
+  Term::ReadLine::Zoid: 0
+build_requires:
+  Data::Dumper: 0
+  Module::Build: 0.24
+  Pod::Text: 0
+  Test::More: 0
+dynamic_config: 1
+provides:
+  Bundle::Zoidberg:
+    file: lib/Bundle/Zoidberg.pm
+    version: 0.1
+  Zoidberg:
+    file: lib/Zoidberg.pm
+    version: 0.96
+  Zoidberg::Contractor:
+    file: lib/Zoidberg/Contractor.pm
+  Zoidberg::DispatchTable:
+    file: lib/Zoidberg/DispatchTable.pm
+  Zoidberg::Eval:
+    file: lib/Zoidberg.pm
+    version: 0.96
+  Zoidberg::Fish:
+    file: lib/Zoidberg/Fish.pm
+  Zoidberg::Fish::Commands:
+    file: lib/Zoidberg/Fish/Commands.pm
+  Zoidberg::Fish::Intel:
+    file: lib/Zoidberg/Fish/Intel.pm
+  Zoidberg::Fish::Log:
+    file: lib/Zoidberg/Fish/Log.pm
+  Zoidberg::Fish::ReadLine:
+    file: lib/Zoidberg/Fish/ReadLine.pm
+  Zoidberg::Job:
+    file: lib/Zoidberg/Contractor.pm
+  Zoidberg::Job::builtin:
+    file: lib/Zoidberg/Contractor.pm
+  Zoidberg::PluginHash:
+    file: lib/Zoidberg/PluginHash.pm
+  Zoidberg::SettingsHash:
+    file: lib/Zoidberg.pm
+    version: 0.96
+  Zoidberg::Shell:
+    file: lib/Zoidberg/Shell.pm
+  Zoidberg::Shell::JobsArray:
+    file: lib/Zoidberg/Shell.pm
+  Zoidberg::StringParser:
+    file: lib/Zoidberg/StringParser.pm
+  Zoidberg::Utils:
+    file: lib/Zoidberg/Utils.pm
+  Zoidberg::Utils::Error:
+    file: lib/Zoidberg/Utils/Error.pm
+  Zoidberg::Utils::FileSystem:
+    file: lib/Zoidberg/Utils/FileSystem.pm
+    version: cvs
+  Zoidberg::Utils::GetOpt:
+    file: lib/Zoidberg/Utils/GetOpt.pm
+  Zoidberg::Utils::Output:
+    file: lib/Zoidberg/Utils/Output.pm
+  Zoidberg::Utils::Output::Scalar:
+    file: lib/Zoidberg/Utils/Output.pm
+generated_by: Module::Build version 0.2611

@@ -1,0 +1,231 @@
+#!/usr/bin/perl
+
+# ############################################################## #
+# Copyright (c) 2002 Jaap G Karssenberg. All rights reserved.    #
+# This program is free software; you can redistribute it and/or  #
+# modify it under the same terms as Perl itself.                 #
+#                                                                #
+# This script is a frontend to the Zoidberg module, it starts    #
+# the Zoidberg perl shell.                                       #
+#                                                                #
+# mailto:pardus@cpan.org                                         #
+# http://zoidberg.sourceforge.net                                #
+# ############################################################## #
+
+use strict;
+use Cwd qw/cwd/;
+our $VERSION = '0.96';
+
+my @inc = (); # You can list custom includes here
+my $cwd = cwd;
+
+unshift @INC, map {m!^/! ? $_ : "$cwd/$_" } @inc;
+
+$0 =~ s!(.*/)!!;
+if (defined $1) {
+	my $dir = $1;
+	$dir = "$cwd/$_" unless $dir =~ m!^/!;
+	$Zoidberg::_base_dir = $dir;
+	unshift @INC, "$dir/lib" if -d "$dir/lib";
+}
+else { $Zoidberg::_base_dir = '' }
+
+# ########### #
+# Get Options #
+# ########### #
+
+eval q#use Zoidberg::Utils::GetOpt 'getopt'; 1# or die $@;
+
+my ($opts, $args) = eval { getopt( '
+	help,h,usage,u version,V config,C
+	exec,e@ command,c@ stdin,s
+	interactive,i login,l plug,p@
+	debug,-D,D verbose,v include,-I@
+	-I* -D* +o@ -o@ -m* -M*
+	@', @ARGV ) } ;
+if ($@) { # renice error message
+	print STDERR ref($@) ? $@->stringify(format => 'gnu') : $@;
+	exit 1;
+}
+
+# TODO -q
+#     Quiet (usually without argument). Suppress normal result or 
+#     diagnostic output. This is very common. Examples: ci(1), co(1), make(1).
+# TODO find switch to set mode / include plugins
+
+if ($$opts{help}) { # pre-emptive #1
+	print (<DATA>);
+	exit 0;
+}
+
+if ($$opts{_opts}) { # special switches
+	for (grep /^-[IDMm]./, @{$$opts{_opts}}) {
+		if (s/^-I//) { push @inc, $_ }
+		elsif (s/^-D//) {
+			no strict 'refs';
+			${$_.'::DEBUG'}++;
+		}
+		else {
+			my $import = /^-M/ ? 1 : 0 ;
+			my $use =
+				/-[Mm](\S+)=(.*)/ ? "use $1 split(/,/,q{$2}); " :
+				s/^-M//           ? "use $_; "  : "use $_ (); " ;
+			$use =~ s/^use -/no /;
+			$$opts{use} .= $use;
+		}
+	}
+}
+
+# ############### #
+# set environment #
+# ############### #
+
+my @user_info = getpwuid($>);
+$ENV{USER} ||= $user_info[0];
+$ENV{HOME} ||= $user_info[7];
+$ENV{ZOID} = $0; # _Don't_ change this to ENV{SHELL} !
+
+# fix environment
+$$opts{login} = 1 unless $ENV{PWD}; # FIXME a better check ?
+if ($$opts{login}) {
+	$ENV{LOGNAME} = $ENV{USER} = $user_info[0];
+	$ENV{HOME} = $user_info[7];
+	$ENV{PWD} = $ENV{HOME} || '/';
+	chdir $ENV{PWD} ;
+}
+else { $ENV{PWD} = $cwd }
+
+# ############# #
+# Load includes #
+# ############# #
+
+# parse includes
+unshift @INC,
+	map {m!^/! ? $_ : "$cwd/$_" }
+	grep s/^-I//, @{ $$opts{_opts} } if $$opts{_opts};
+
+# load Zoidberg.pm
+eval q#require Zoidberg# or die $@;
+
+if ($$opts{version}) { # pre-emptive #2
+	print "zoid $VERSION\n$Zoidberg::LONG_VERSION\n";
+	exit 0;
+}
+
+# ############## #
+# Parse settings #
+# ############## #
+
+my %settings;
+
+if ($$opts{'-o'}) {
+	for ( @{$$opts{'-o'}} ) {
+		my ($opt, $arg) = split '=', $_, 2;
+		$settings{$opt} = defined($arg) ? $arg : 1;
+	}
+}
+if ($$opts{'+o'}) {
+	for ( @{$$opts{'+o'}} ) {
+		my ($opt, $arg) = split '=', $_, 2;
+		$settings{$opt} = defined($arg) ? $arg : 0;
+	}
+}
+
+for (qw/data_dirs rcfiles/) { # arrays
+	$settings{$_} = [ split /:/, $settings{$_} ]
+		if defined $settings{$_} and ! ref $settings{$_};
+}
+
+for (qw/verbose debug login/) { # options
+	$settings{$_} = $$opts{$_} if defined $$opts{$_};
+}
+
+if ($$opts{config}) { # pre-emptive #3
+	%settings = (%Zoidberg::_settings, %settings);
+	for (sort keys %settings) {
+		next unless defined $settings{$_};
+		my $val = $settings{$_};
+		if (ref($val) eq 'ARRAY') { $val = join ', ', @$val }
+		elsif (ref($val) eq 'HASH') {
+			$val = join ', ', map "$_ => $$val{$_}", sort keys %$val;
+		}
+		print "$_ = $val\n"
+	}
+	exit 0;
+} # FIXME shouldn't this be a machine parsable format ? -- Yes it should !
+
+# ################## #
+# prepare for launch #
+# ################## #
+
+my $exec_string = 
+	$$opts{exec}    ? join(' ', @{$$opts{exec}})    :
+	$$opts{command} ? join(' ', @{$$opts{command}}) : '' ;
+
+# rest ARGV should be files
+for (@$args) { complain($_, 3) unless -f $_ }
+
+my $interact = $$opts{interactive} ||
+	(@$args || $exec_string || $$opts{stdin}) ? 0 : (-t STDIN and -t STDOUT) ;
+
+$settings{interactive} = $interact;
+
+# ############## #
+# AND Lift-off ! #
+# ############## #
+
+my $cube = Zoidberg->new( settings => \%settings );
+
+eval qq{
+	package # hide from pause indexer
+		Zoidberg::Eval;
+	$$opts{use}
+} if $$opts{use};
+
+if ($$opts{plug}) { $cube->plug($_) for @{$$opts{plug}} }
+
+if ($exec_string) {
+#	if ($args{command}) { $cube->{ipc}->do($exec_string) }
+#	else { 
+		$cube->shell_string($exec_string)
+#	}
+}
+
+$cube->source($_) for @$args;
+
+if ( $$opts{stdin} || -p STDIN || (!$interact && !$exec_string) ) {
+	while (<STDIN>) { $cube->shell_string($_) }
+	# FIXME do something like set nobuffer and let zoid read STDIN
+	# then it can also pull from it
+}
+
+$cube->main_loop if $interact;
+
+my $exit = 0;
+$exit = ref($$cube{error}) ? ($$cube{error}{exit_status} || 1) : 1
+	unless $interact or ! $$cube{error};
+
+$cube->round_up;
+
+exit $exit;
+
+# ############ #
+# sub routines #
+# ############ #
+
+sub complain {
+	my $opt = shift;
+	my $m = shift || 1;
+	
+	my $bn = $0;
+	$bn =~ s|^(.*/)*||;
+	if ($m == 1) { print STDERR "$bn: unrecognized option '$opt'"; }
+	elsif ($m == 2) { print STDERR "$bn: option '$opt' requires an argument"; }
+	elsif ($m == 3) { print STDERR "$bn: $opt: No such file or directory\n"; }
+	
+	if ($m < 3) {print "\nTry '$bn --help' for more information.\n"}
+	exit $m;	
+}
+
+# the usage message is inserted below on compile time
+__DATA__

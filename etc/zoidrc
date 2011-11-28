@@ -1,0 +1,100 @@
+
+use Zoidberg::Shell qw/:all/;
+use Zoidberg::Utils qw/:output list_dir/;
+
+$shell = Zoidberg::Shell->current(); # get object
+
+### welcome and exit messages
+message(
+"--[ This is the Zoidberg shell ]--[ Version $Zoidberg::VERSION ]--
+### This is a development version, consider it unstable" );
+$shell->{events}->add( 'exit',
+	sub { message("--[ CU ]--[ Please report all bugs ]--") }
+);
+
+### set environment
+# Default prompt
+$ENV{PS1} = '\C{bold,blue}\u@\h \A \C{green}\W\$\C{reset} ';
+$ENV{PS2} = '\C{bold,blue}>\C{reset} ';
+
+# Black & verbose prompt
+#$ENV{PS1} = '\C{bold,black}--( \u@\H )-( \t )-( \w )-( \! )-( load \P{%l} )--\C{reset}\\n\C{bold,black} \$ \C{reset}';
+#$ENV{PS2} = '\C{bold,black} \$ \C{reset}';
+
+defined $ENV{$$_[0]} or $ENV{$$_[0]} = $$_[1] for
+	[ EDITOR   => 'vim'  ],
+	[ VISUAL   => 'vim'  ],
+#	[ MAILER   => ?      ],
+	[ PAGER    => 'less' ],
+	[ BROWSER  => 'lynx' ],
+	[ CLICOLOR => 1      ];
+
+# some glue for the Gentoo distrobution
+# we need a *real* bash mode to do this the right way
+if (
+	-e '/etc/profile.env' and
+	open EXP, '/etc/profile.env'
+) {
+	while (<EXP>) {
+		next unless /^\s*export\s*(\w+)=(['"])(.*?)\2\s*$/;
+		$ENV{$1} = $3 unless defined $ENV{$1};
+	}
+	close EXP;
+}
+
+# just to be sure we have a path at all
+$ENV{PATH} ||= ($> == 0)
+	? '/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin'
+	: '/bin:/usr/bin:/usr/local/bin';
+
+# Some programs expect this var to point to a fully posix compliant shell.
+# Since zoid doesn't use this var, no harm is done.
+# Notice that even perl core utils like perldoc have expectations about it.
+$ENV{SHELL} = '/bin/sh';
+
+### set aliases
+alias( {
+	up  => 'cd ..',
+	b   => 'back',
+	f   => 'forw',
+	bye => 'exit Bye bye',
+	l   => 'ls',
+	ll  => 'ls -l',
+	la  => 'ls -la',
+	lh  => 'ls -lh',
+	j   => 'jobs',
+	'?' => 'help',
+	h   => 'help',
+	p   => 'print',
+	x   => 'pp',
+	r   => 'fc -s',
+	( ($> == 0) # root gets other aliases
+		? ( perldoc => 'perldoc -U', perlfunc => 'perldoc -Uf' )
+		: ( perlfunc => 'perldoc -f' )
+	),
+	unexport => 'export -n',
+} );
+
+# add some alias to perl_keywords to make completion work
+push @{ $$shell{settings}{perl}{keywords} }, qw/p pp x/;
+
+### default settings
+set('notify', 'notify_verbose');
+set('nocaseglob')
+	if $^O =~ /^(?:MSWin32|VMS|os2|dos|riscos|MacOS|darwin)$/;
+	# logic borrowed from File::Glob
+
+### OS dependent stuff
+if ($^O eq 'linux' and $ENV{CLICOLOR}) { # _GNU_/Linux rigth ?
+	alias( {
+		ls   => 'ls --color=auto',
+		grep => 'grep --color=auto',
+	 } );
+}
+
+## Check for zoidrc.d/ scripts
+my $rcdir = "$SCRIPT.d";
+if (-d $rcdir) {
+	source "$rcdir/$_" for list_dir($rcdir);
+}
+

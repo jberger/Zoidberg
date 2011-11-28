@@ -1,0 +1,425 @@
+=head1 NAME
+
+zoiduser - Extended user documentation for zoid
+
+=head1 DESCRIPTION
+
+=head2 Configuration
+
+The location of config and data files can be installation specific.
+You can check the location where zoid looks for them with the command C<zoid --config>.
+
+By default zoid uses two run control files:
+F</etc/zoidrc> and F<~/.zoidrc> or F<~/.zoid/zoidrc>,
+these are ordinary perl scripts that can interface with zoid.
+In general data files are found in F<~/.zoid/>, F</usr/local/share/zoid/>
+or F</usr/share/zoid/> these are called 'data_dirs'.
+
+The sub dir F<plugins> can contains config files
+for various plugins or directories with all files belonging to a plugin.
+The following plugins are included in the standard distribution:
+
+FIXME tell which builtins are provided by each plugin
+FIXME tell commands provided by Zoidberg.pm
+
+=over 4
+
+=item Commands
+
+Ships a collection of standard builtin commands that one 
+would expects to have in a shell.
+
+Provides: B<cd>, B<pwd>, B<exec>, B<eval>, B<source>, B<true>, B<false>,
+B<newgrp>, B<umask>, B<read>, B<wait>, B<fg>, B<bg>, B<kill>, B<jobs>,
+B<set>, B<export>, B<setenv>, B<unsetenv>, B<alias>, B<unalias>, B<dirs>,
+B<popd>, B<pushd> and B<symbols>
+
+=item Log
+
+Keeps a history of your doings.
+
+=item Intel
+
+Takes care of tab expansion.
+
+Provides: B<complete>
+
+=item ReadLine
+
+Tries to load a module from the L<Term::ReadLine> family of modules.
+
+Provides: B<readline>, B<readmore> and B<select>
+
+=item CPAN
+
+Adds a 'CPAN mode' which uses CPAN::Shell.
+
+=back
+
+In theory you should be able to remove or replace any of these plugins,
+but you better not try this till a more stable version of zoid.
+
+=head2 Key Bindings
+
+Key bindings depend on the ReadLine module that is loaded. See for example
+L<Term::ReadLine::Zoid>.
+
+=head2 Settings
+
+The following settings supported by (some) Zoidberg modules.
+They are housed in the hash C<< ->{settings} >>.
+Also the builtin C<set> command acts on this hash.
+
+( FIXME link to doc on set command )
+
+More advanced settings can be found in L<zoiddevel>.
+
+=over 4
+
+=item noglob
+
+Disable path expansion for shell-like syntax.
+
+=item nocaseglob
+
+When set makes globs case insensitive.
+
+=item nullglob
+
+It allows to have wildcard patterns that expand into an empty list.
+The default behavior is to leave the pattern unchanged  
+when it is syntactically incorrect, or when the list of matching pathnames is empty.
+
+=item voidbraces
+
+Do brace expansion posix compliant instead of bash compatible. This means
+that braces will be removed even if there is just one word between them.
+
+=item hide_private_method
+
+Hide all object methods and data structures which have a name starting with an '_'
+unless they are asked for explicitly.
+
+=item hide_hidden_files
+
+Hide all filesystem nodes which have a name starting with a '.'
+unless they are asked for explicitly.
+
+=item ignoreeof
+
+When this setting is in effect a ^D char, also known as EOF or EOT,
+won't exit the shell.
+
+=item naked_zoid
+
+Don't hide the root object behind clothes for things like tab
+completion and the single arrow operator, but show it in full glory.
+
+=item notify
+
+Asynchronous notification, don't wait for the respawning of a prompt
+before notifying the user about background jobs that have finished.
+
+This option should be named 'notify_async' for clearity, but 'notify' is
+the proper name according to POSIX.
+
+=item notify_verbose
+
+When you stop a job the shell will show all jobs instead of just notifying
+just of the one you stopped; makes the behaviour more tcsh(1) like.
+
+=back
+
+=head2 Syntax
+
+Since the syntax of the Zoidberg shell is completely configurable
+we can only comment on the syntax as defined by the default
+config files. The general structure will be the same for most user defined
+configuration but any markup or token could be changed to render the syntax
+completely unrecognizable.
+
+The Zoidberg syntax consists of three levels of grouping:
+
+=over 4
+
+=item Logical grouping
+
+First the syntax is split into blocks with logical/script delimiters
+
+	[block] && [block] || [block] ; [block]
+
+=item Pipes and redirections
+
+Once the string is cut into logical blocks each
+of these blocks is split in sub blocks by pipes
+and.
+
+	[sub_block] | [sub_block] | [sub_block]
+
+The exit status of a pipeline is the exit status of the last command in the 
+pipeline.
+
+=item Context blocks
+
+At last for each of these sub-blocks a context is decided like:
+
+	CMD	- commands sytax (like sh syntax)
+	PERL	- blocks of perl code
+
+Each is executed differently by a suitable subroutine or application, and all
+are glued together to form a pipeline.
+
+=back
+
+=head2 Contexts
+
+The contexts named below are hardcoded, others can be added by plugins.
+To disable hardcoded contexts see the L<_no_hardcoded_context> setting.
+
+=over 4
+
+=item PERL
+
+Perl is the default context if the whole block is between curly brackets, when
+the first non-whitespace char of the block matches $,@ or % , 
+when the first word seems to be a subroutine because it has parenthesis
+or when the first word is a perl keyword like 'if', 'while', 'for' etc.
+These keywords can be configured with the array in C<< ->{settings}{perl}{keywords} >>
+
+	# perl because of reserved word
+	zoid$ for (0..3) { sleep 1; print $_ . "\n" }
+	
+	# perl because of dollar sign
+	zoid$ $self->{settings}{naked_zoid}++
+	
+	# perl because of parenthesis
+	zoid$ ls(qw/-al/)
+	
+	# perl because of curlies
+	zoid$ { open TEST, '<test.dat' }
+
+Perl code can have modifiers after the last curly. The default can be set
+with C<< ->{settings}{perl}{opts} >>. Currently supported are :
+
+	n: enclose the expression in a "while STDIN" loop
+	p: like 'n' but also print $_ at the end of each loop
+	g: grep lines from STDIN that make the expression return non-zero
+	z: use strict
+	Z: no strict, the default
+	
+	# example
+	zoid$ ls -al | { s/^(d)\S+/DIR:/ }g
+
+Zoidberg applies a bit of source filtering is applied to the perl code.
+This renders a lonesome dereference operator C<< -> >> into C<< $self-> >>.
+
+	# Thus
+	zoid$ ->kill('1230')
+	
+	# is the same as
+	zoid$ $self->kill('1230')
+
+Variables in that match the name of an environment variable get translated to the environment
+varriable, arrays cause a tied array to be imported from L<Env>. You can manipulate the existence
+of an environment variable with the 'export' builtin.
+
+	# Thus
+	zoid$ print $PATH
+	
+	# is (if $ENV{PATH} exists) the same as
+	zoid$ print $ENV{PATH}
+	
+	# and this also works
+	zoid$ push @PATH, '/usr/X11R6/bin/'
+
+To avoid source filtering use the 'z' option.
+( Although once a tied array is imported, it's there. )
+
+Non-existent sub routines are AUTOLOAD'ed to be built-in or system commands,
+alias- and other expansions apply.
+
+	# Thus
+	zoid$ ls('*')
+	# is perl, but does exactly the same as
+	zoid$ ls *
+
+When such a AUTOLOAD'ed routine is used in scalar or list context it's output will
+be captured and returned as scalar or list.
+
+	# examples
+	zoid$ ls($_) for cat('MANIFEST')
+	zoid$ mplayer( locate('blinkenlights.mpg') )
+
+For this "capturing mode" the record separator (C<$/>) can be set by using C<$ENV{RS}>.
+
+=item CMD
+
+This context is intended to make the Zoidberg shell a little friendlier to
+people used to shells like bash(1). Also this syntax requires less chars to
+execute a system or built-in command. Only the most basic stuff is implemented, you should 
+use perl for things like flow control. Since the default syntax for pipelines and 
+logic lists is also the same as in "sh like" shells a lot of simple constructs
+will work as expected.
+
+	# this does what it would in /.*sh/
+	zoid$ ls -al | grep -v CVS | grep ^d > dirs.txt
+
+Quoting does not entirely work like in "sh like" shells. Most importantly, you can't
+start a quoted block in the middle of a word, if you use quotes you need to quote
+an entire word. (The exception to this rule is syntax like C<export var='val'>.)
+Also be aware that within single quotes the backslash is still recognised as an escape,
+but only for the quote itself, the same way perl does.
+
+All words, are subject to parameter- and path-expansion unless
+they are quoted. For double quoted words only parameter expansion is performed, for single
+quoted words no expansion is performed at all. Parameter expansion interpolates
+environment variables. (Path expansion is sometimes also called 'glob expansion')
+
+All parameters can be used as arrays, the colon ':' will be used as element separator.
+To get one element the form C<$VAR[$i]> is recognized by the parameter expansion,
+where C<$i> is a null-based integer.
+The form  C<@VAR> is a special case that will be expanded to a word list of all the
+array elements. 
+To avoid conflicts with things like the 'user@host' format used by many 
+applications this special case can only be used as a separate unquoted word.
+
+	zoid$ echo $PATH
+	/bin:/usr/bin/:/usr/local/bin
+	zoid$ echo $PATH[2]
+	/usr/local/bin
+	zoid$ echo @PATH
+	/bin /usr/bin/ /usr/local/bin
+
+If the command matches an entry in the C<$$shell{commands}> hash, it is taken to be
+a built-in command and the job is not forked to a seperate process.
+
+=back
+
+=head3 FIXME
+
+FIXME comment on custom defined contexts
+
+FIXME comment on aliases
+
+=head3 variables
+
+Like most shells zoid mixes the use of it's own variables with the use of environment
+variables. You can use the C<export> builtin to move variables from the perl namespace
+to the environment.
+
+=head3 mode
+
+While in normal use zoid tries to determine which context a statement belongs to
+automaticly there are also situations in which you want to force one context for all 
+commands. In these cases you can set the 'mode' of the shell. The "mode" builtin
+is provided to do this a little more intelligent.
+
+For example the CPAN plugin provides an interactive interface to the CPAN::Shell module.
+
+	# enter cpan mode
+	zoid$ mode cpan
+	zoid$ i /Zoidberg/
+	# use a "normal" shell command
+	zoid$ !df -h /
+	zoid$ install Bundle::Zoidberg
+	# return to the "normal" mode
+	zoid$ mode -
+
+Modes can be either the name of a custom context (probably defined by a plugin),
+or the name of a perl module (matching a '::').
+If the mode is a module name all commands are mapped to methods in that namespace;
+in this case you can postfix the module name with '->' if the module expects the
+class name as first argument to all calls.
+
+	# set mode the hard way
+	zoid$ mode CPAN::Shell->
+	zoid$ i /Zoidberg/
+	zoid$ mode -
+
+=head3 Examples
+
+Some system command:
+
+	zoid$ mplayer -vo sdl -ao sdl my_favorite_movie.avi
+
+Perl code between brackets:
+
+	zoid$ { print "This is perl code." }
+
+A subroutine call to an object loaded in Zoidberg, 
+perl code with a little source filtering:
+
+	zoid$ ->Help->help
+	 -or-
+	zoid$ ->Help->help('objects')
+
+A builtin command:
+
+	zoid$ cd ..
+
+A custom syntax (SQL) enforced on a block:
+
+	zoid$ sql{ SELECT * FROM users WHERE clue > 0 }
+
+And as said all of these can be combined:
+
+	zoid$ cd /usr/local && { print "This is perl code." } | less || sql{SELECT * FROM users WHERE clue > 0}
+
+This will first execute C<cd /usr/local>, on succes followed by C<{ print "This is perl code." } | less>
+and if one of these failed we get to see the result of C<< sql{SELECT * FROM users WHERE clue > 0} >>
+
+This makes the precedence of this example as follows.
+
+	( ( 1 and ( 2 pipe 3 ) ) or 4 )
+
+	1 = cd /usr/local
+	2 = { print "This is perl code." }
+	3 = less 
+	4 = sql{SELECT * FROM users WHERE clue > 0}
+
+=head2 Notes
+
+(random notes that probably belong elsewhere in this document)
+
+Files starting with a '-' are ignored in globs unless the glob starts with a '-', this is to
+prevent globs from accidentally adding switches to a command.
+
+=head1 ENVIRONMENT
+
+The variables $PWD, $HOME and $USER are set to default values if not
+yet set by the parent process.
+
+The variable $ZOID will point to the location of the zoid executable,
+it is similar to $SHELL for POSIX compliant shells. zoid uses a differ-
+ent variable because some programs seem to expect $SHELL to point to a
+POSIX compliant shell.
+
+To switch off ansi colours on the terminal set $CLICOLOR to 0 (null).
+
+The variable $RS (record seperator) is used to split lines when 
+capturing ouput from a command in list context.
+It defaults to the newline character.
+
+The variable $IFS (input field seperators) is used to split words after
+several expansions. It defaults to C<< <space><tab><return> >>.
+
+This list probably isn't complete.
+
+=head1 FILES
+
+Zoidberg uses rc files, data files and plugin files, use the --config
+switch to check the search paths used.
+
+Which rcfiles are loaded is controlled be the 'rcfiles' and 'norc' set-
+tings, try "zoid -o norc" to skip all rcfiles or "zoid -o
+rcfiles=file1:file2:file3" to use files other then the default.
+
+The runtime search path for plugins etc. can be controlled with the
+'data_dirs' setting, try "zoid -o data_dirs=dir1:dir2:dir3".
+
+
+=head1 SEE ALSO
+
+L<zoidbuiltins>(1), L<zoiddevel>(1), L<zoidfaq>(1), L<perl>(1), 
+L<http://zoidberg.sourceforge.net>
+

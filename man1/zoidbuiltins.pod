@@ -1,0 +1,382 @@
+=head1 NAME
+
+zoidbuiltins - Zoidberg's builtins
+
+=head1 DESCRIPTION
+
+This is a listing of the default builtins of the Zoidberg shell.
+Many of these are defined in the default plugins, so a modified shell
+can have different builtin commands.
+
+=head1 COMMANDS
+
+=over 4
+
+=item alias
+
+
+=item alias I<name>
+
+
+=item alias I<name>=I<command>
+
+
+=item alias I<name> I<command>
+
+Make I<name> an alias to I<command>. Aliases work like macros
+in the shell, this means they are substituted before the commnd
+code is interpreted and can contain complex statements.
+
+Without I<command> shows the alias defined for I<name> if any;
+without arguments lists all aliases that are currently defined.
+
+Aliases are simple substitutions at the start of a command string.
+If you want something more intelligent like interpolating arguments
+into a string define a builtin command; see L<hash>.
+
+
+=item bg I<job_spec>
+
+Run the job corresponding to I<jobspec> as an asynchronous background process.
+
+Without argument uses the "current" job.
+
+
+=item cd [-v|--verbose] [I<dir>|-|(+|-)I<hist_number>]
+
+
+=item cd (-l|--list)
+
+Changes the current working directory to I<dir>.
+When used with a single dash changes to OLDPWD.
+
+This command uses the environment variable 'CDPATH'. It serves as
+a search path when the directory you want to change to isn't found
+in the current directory.
+
+This command also uses a directory history.
+The '-number' and '+number' switches are used to change directory
+to an positive or negative offset in this history.
+
+
+
+=item dirs
+
+Output the current dir stack.
+
+TODO some options
+
+Note that the dir stack is ont related to the dir history.
+It was only implemented because historic implementations have it.
+
+
+=item disown
+
+TODO
+
+=item eval I<cmd>
+
+Eval I<cmd> like a shell command. Main use of this is to
+run code stored in variables.
+
+
+=item exec I<cmd>
+
+Execute I<cmd>. This effectively ends the shell session,
+process flow will B<NOT> return to the prompt.
+
+
+=item export I<var>=I<value>
+
+Set the environment variable I<var> to I<value>.
+
+TODO explain how export moved varraibles between the perl namespace and the environment
+
+
+=item false
+
+A command that always returns an error without doing anything.
+
+
+=item fc [-r][-e editor] [I<first> [I<last>]]
+
+
+=item fc -l [-nr] [I<first> [I<last>]]
+
+
+=item fc -s [I<old>=I<new>] [I<first> [I<last>]]
+
+"Fix command", this builtin allows you to edit and re-execute commands
+from the history. I<first> and I<last> are either command numbers or strings
+matching the beginning of a command; a negative number is used to designate
+commands by counting back from the current one. Use the '-l' option to list
+the commands in the history, and the '-n' switch to surpress the command
+numbers in the listing.The '-r' switch reverses the order of the commands.
+The '-s' switch re-executes the commands without editing. 
+
+I<first> and I<last> default to '-16' and '-1' when the '-l' option is given.
+Otherwise I<first> defaults to '-1' and I<last> defaults to I<first>.
+
+Note that the selection of the editor is not POSIX compliant
+but follows bash, if no editor is given using the '-e' option
+the environment variables 'FCEDIT' and 'EDITOR' are both checked,
+if neither is set, B<vi> is used.
+( According to POSIX we should use 'ed' by default and probably 
+ignore the 'EDITOR' varaiable, but I don't think that is "What You Want" )
+
+Following B<zsh> setting the editor to '-' is identical with using
+the I<-s> switch.
+
+Also note that B<fc> removes itself from the history and adds the resulting
+command instead.
+
+Typically B<r> is aliased to 'fc -s' so B<r> will re-execute the last
+command, optionally followed by a substitution and/or a string to match
+the begin of the command.
+
+TODO: regex/glob substitution for '-s' switch; now only does string substitution.
+
+
+=item fg I<job_spec>
+
+Run the job corresponding to I<jobspec> as a foreground process.
+
+Without argument uses the "current" job.
+
+
+=item GetHistory
+
+Returns the commandline history either as an array reference
+or as an array.
+
+I<This routine does not use the history file.>
+
+=item hash I<location>
+
+
+=item hash -r
+
+TODO
+
+Command to manipulate the commands hash and command lookup logic.
+
+
+=item help [I<topic>|command I<command>]
+
+Prints out a help text.
+
+
+=item history [--type I<type>] [--read] [-n|--nonu] [-r|--reverse] [I<first> [I<last>]]
+
+Returns (a part of) the history. By default it tries to find the commandline
+history (depending on GetHistory), but the '--read' option forces reading the
+history file. To get other log types, like 'pwd', use the '--type' option.
+The '--nonu' option surpressees line numbering for the terminal output.
+
+The arguments I<first> and I<last> can either be a positive or negative integer,
+representing the command number or reverse offset, or a string matching the begin
+of the command. If only one integer is given I<last> defaults to '-1'; if only one
+string is given I<last> defaults to I<first>. As a bonus you can supply a regex
+reference instead of a string when using the perl interface.
+
+Note that unlike B<fc> the B<history> command is not specified by posix and
+the implementation varies widely for different shells. In zoid, B<fc> is build on
+top of B<history>, so options for B<history> are chosen consistently with B<fc>.
+
+
+=item jobs [-l,--list|-p,--pgids] I<job_spec ...>
+
+Lists current jobs.
+
+If job specs are given as arguments only lists those jobs.
+
+The --pgids option only lists the process group ids for the jobs
+without additional information.
+
+The --list option gives more verbose output, it adds the process group id
+of the job and also shows the stack of commands pending for this job.
+
+This command is not POSIX compliant. It uses '-l' in a more verbose
+way then specified by POSIX. If you wat to make sure you have POSIX
+compliant verbose output try: C<jobs -l | {! /^\t/}g>.
+
+
+=item kill -l
+
+
+=item kill [-w | -s I<sigspec>|-n I<signum>|-I<sigspec>] (I<pid>|I<job_spec>)
+
+Sends a signal to a process or a process group.
+By default the "TERM" signal is used.
+
+The '-l' option list all possible signals.
+
+The -w or --wipe option is zoidberg specific. It not only kills the job, but also
+wipes the list that would be executed after the job ends.
+
+
+=item log I<string> I<type>
+
+Adds I<string> to the history file with the current timestamp
+and the supplied I<type> tag. The type defaults to "log".
+If the type is set to "hist" the entry will become part of the
+command history after the history file is read again.
+
+=item newgrp
+
+TODO
+
+
+=item popd I<dir>
+
+Pops a directory from the dir stack and B<cd>s to that directory.
+
+TODO some options
+
+
+=item pushd I<dir>
+
+Push I<dir> on the dir stack.
+
+TODO some options
+
+
+=item pwd
+
+Prints the current PWD.
+
+
+=item read [-r] I<var1> I<var2 ..>
+
+Read a line from STDIN, split the line in words 
+and assign the words to the named enironment variables.
+Remaining words are stored in the last variable.
+
+Unless '-r' is specified the backslash is treated as
+an escape char and is it possible to escape the newline char.
+
+
+=item readline
+
+Returns a line of input.
+
+
+=item reload I<module> [I<module>, ..]
+
+
+=item reload I<file> [I<file>, ..]
+
+Force (re-)loading of a module file. Typically used for debugging modules,
+where you reload the module after each modification to test it interactively.
+
+TODO: recursive switch that scans for 'use' statements
+
+
+=item select
+
+Given a list of items presents the user with a menu and returns
+the choice made or undef.
+
+
+=item set [+-][abCefnmnuvx]
+
+
+=item set [+o|-o] I<option>
+
+Set or unset a shell option. Although sometimes confusing
+a '+' switch unsets the option, while the '-' switch sets it.
+
+Short options correspond to the following names:
+
+	a  =>  allexport  *
+	b  =>  notify
+	C  =>  noclobber
+	e  =>  errexit    *
+	f  =>  noglob
+	m  =>  monitor    *
+	n  =>  noexec     *
+	u  =>  nounset    *
+	v  =>  verbose
+	x  =>  xtrace     *
+	*) Not yet supported by the rest of the shell
+
+See L<zoiduser> for a description what these and other options do.
+
+FIXME takes also hash arguments
+
+
+=item setenv I<var> I<value>
+
+Like B<export>, but with a slightly different syntax.
+
+
+=item SetHistory
+
+Takes either an array or an array reference and uses that
+as new commandline history.
+
+I<This routine does not alter the history file.>
+
+
+=item source I<file>
+
+Run the B<perl> script I<file>. This script is B<NOT> the same
+as the commandline syntax. Try using L<Zoidberg::Shell> in these
+scripts.
+
+
+=item symbols [-a|--all] [I<class>]
+
+Output a listing of symbols in the specified class.
+Class defaults to the current perl namespace, by default
+C<Zoidberg::Eval>.
+
+All symbols are prefixed by their sigil ('$', '@', '%', '&'
+or '*') where '*' is used for filehandles.
+
+By default sub classes (hashes containing '::')
+and special symbols (symbols without letters in their name)
+are hidden. Use the --all switch to see these.
+
+
+=item true
+
+A command that never fails and does absolutely nothing.
+
+
+=item umask
+
+TODO
+
+
+=item unalias I<name>
+
+Remove an alias definition.
+
+
+=item unsetenv I<var>
+
+Set I<var> to undefined.
+
+
+=item wait
+
+TODO
+
+
+=item which [-a|--all|-m|--module] ITEM
+
+Finds ITEM in PATH or INC if the -m or --module option was used.
+If the -a or --all option is used all it doesn't stop after the first match.
+
+TODO it should identify aliases
+
+TODO what should happen with contexts other then CMD ?
+
+
+=back
+
+=head1 SEE ALSO
+
+L<zoiduser>(1), L<perl>(1), L<http://zoidberg.sourceforge.net>
+

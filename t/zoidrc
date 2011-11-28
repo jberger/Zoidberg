@@ -1,0 +1,23 @@
+
+use Zoidberg::Shell qw/alias/;
+use Zoidberg::Utils qw/output error/;
+
+alias { test => 'echo ok' };
+
+Zoidberg::Shell->current()->{commands}{builtin_cat} = sub {
+	my $file = shift;
+	open FILE, $file || error "could not open $file";
+        local $/;
+	my @lines = <FILE>;
+	close FILE;
+	output \@lines;
+};
+
+Zoidberg::Shell->current()->{commands}{builtin_cat_1} = sub {
+	my $file = shift;
+	open FILE, $file || error "could not open $file";
+        local $/;
+	my $lines = join '', <FILE>;
+	close FILE;
+	output $lines;
+};

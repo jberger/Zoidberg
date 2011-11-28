@@ -1,0 +1,756 @@
+ Revision history for Zoidberg - a modular perl shell 
+======================================================
+
+0.96 Sat Feb 11 2006
+	- Added utf8 decoding for file names. Submitted by Wagner Frederic.
+	- Added patch to check PAR_TEMP environment var. Submitted
+	by Johannes grosse.
+	- Added patch to include /etc/zoidrc.d/ in zoidrc (debian bug #352217)
+
+0.95 Thu Apr 28 2005
+	Bugfix release
+	- Fixed a critical bug in the auto-multiline behaviour, again 
+	reported by Ryan Voots.
+	- Added support for jobspecs without 'fg' in front of them on the
+	commandline.  Requested by Allan Fields
+	- Added word splitting for parameter expansion (not *yet* IFS)
+	- Fixed a bug in the parsing for redirections. Reported by Wes Hardaker
+	- Added working 'reload' builtin to Z:F::Commands
+
+0.94 Mon Mar 21 2005
+	Bugfix release
+	- Fixed a critical bugfix making the shell practically unusable
+	once the PWD contained a single quote :(  Reported by Ryan Voots.
+
+     Mon Mar 14
+	- Added alias for gnu grep to the default zoidrc
+	- Added functionality to the jobs builtin command
+	- Reniced the generation of zoidbuiltins(1)
+
+0.93 Fri Jan 21 2005
+	Bugfix release
+	- Made brace expansion more bash compatible, set 'voidbraces'
+	for the old behaviour
+	- Renamed the 'allow_null_glob_expansion' to 'nullglob'
+	- Added the 'nocaseglob' setting
+	- Fixed a serious bug in the logic operator evaluation
+
+     Thu Jan 13
+	- Added examples/Menu.pl
+	- Made background and delayed jobs remember their PWD and make sure
+	they are their when executing
+	- Added a 'die_silently' option for the shell() and builtin() routines
+
+     Wed Jan 12
+	- Refs to hashes tie'ed with DispatchTable are now also bless'ed to
+	allow for an object interface. Added an 'add' and a 'pop' method as
+	aliases for STORE and DELETE.
+	- Added examples/word_expansion.pl and updated some related docs
+
+     Mon Jan 10
+	- Fixed a bug for using builtins in a command expansion
+	- Fixed word splitting for command expansion
+	- Fixed quote removal for multiline "words"
+
+     Wed Jan  5 2005
+	- Fixed two bugs in the 'fc' builtin and added doc for it
+
+0.92 Tue Dec  7 2004
+	Releasing quickly due to the bug in the 'export' builtin, also packaging working
+	'--help' and '--usage' switched for builtins and working history commands.
+	- Fixed 't/31_ZoidbergError.t', it seems overload.pm prevented 'is_deeply()'
+	from working correctly
+	- Delayed history logging till after executng the command, so the command is able
+	to modify what is logged; this was needed for 'fc' to work
+	- The 'history' and 'fc' commands seem to work correctly now; also the 'cd'
+	history functions now use 'history'.
+
+     Fri Dec  3
+	- Restructured the way the 'history' builtin works
+	- Added 'GetHistory' and 'SetHistory' builtins for Z:Fish::ReadLine
+	- Made the directory history of the 'cd' builtin work with Log
+
+     Wed Dec  1
+	- Changed history tag from "hist" to "cmd"
+	- Changed '.history.yaml' into '.zoid.log.yaml' and added pid to the data set
+
+     Sat Nov 27
+	- Fixed a bug in the export builtin with exporting variables that already
+	existed in the environment
+	- Enabled --version --usage and --help for all builtins using Z:Utils::GetOpt
+
+0.91 Mon Nov 22
+	Maintenance release, mostly bugfixes and some cleanups
+	- Checked all logic concerning the exit status of system commands
+	the $$shell{error} hash now contains the exit_status, the signal
+	and the "core dumped" bit
+	- Made default perl options a setting
+	- Moved perl settings in "perl" sub-hash
+	- Made the export builtin really move variables between the perl namespace
+	and the environment; also the source-filter logic changed a bit for this
+	- Made alias expansion check for no_mode '!'
+
+     Mon Nov 15
+	- Fixed bug with completing redirection arguments
+	- Added some prompt escapes to Z:Fish::ReadLine
+	- Added completion for autoloaded contexts
+
+     Sun Oct 24
+	- Removed lib/Zoidberg/Eval.pm in favour of including it in
+	Zoidberg.pm _but_ allowing to change the perl eval namespace
+	- Made no_esc_rm a global parser setting for StringParser
+	- Changed shell quoting behaviour slightly to make it more perlish
+	- Made zoid remember the perl namespace after a "package" statement
+
+     Sat Oct 23
+	- Fixed a bug with auto-multiline commands not being logged
+	correctly
+	- Added examples/cpan.pl
+	- Tuned internal APIs to make examples/cpan.pl possible,
+	removed the '--rcfile' and '--norc' switches from fluff
+	in the process, just use '-o rcfiles=..' or '-o norc'
+
+     Fri Oct  1 
+        - Fixed a bug with the >> and << redirections
+	- Fixed a bug with the quoting of "'" (etc.) for completion
+	- Added $( .. )[.] command substitution syntax
+
+0.90 Mon Sep  6 2004
+        This release is going to amsterdam.pm for demonstration.
+	It is supposed to be the first release candidate for a
+	stable 1.00 version (but not all builtins are done yet).
+        - Refactored the settings to control parser behaviour;
+        all kinds of blocks can be wrapped in array refs again
+
+     Sun Sep  5
+        - Modified the format of redirections in the parse tree
+	- {error} now also contains the signal that caused it
+        - made routines in Z:Shell not modify $$shell{error}
+
+     Sat Sep  4
+        - Fixed bug with multiline entries in the history file
+	- PWD is now also logged for interactive use
+
+     Fri Sep  3
+        - Blocks now also can be anonymous subroutines
+	- Added --plug option to fluff
+	- Mode can be a class now
+
+     Wed Sep  1
+        - Tweaked the parsing of redirections
+	- Made output() handle capturing more consequently
+	- Added command substitution for `..` $(..) and @(..)
+
+     Wed Aug 11
+        - Added the parser stack for word_expansion again
+	- Renamed {contexts} to {parser} because it contains more then just
+	contexts
+	- Renamed {parent} to {shell} because I think its clearer
+
+     Tue Aug 10
+        - Added the 'symbols' builtin to Commands - copied idea from Psh
+	- Removed some deprecated devel builtins from Commands
+	- Removed Help plugin, and merged the 'help' builtin in Commands
+	- Added the 'which' builtin - copied idea from Psh
+
+     Sun Aug  8
+        - Added autoloading of contexts (and thus modes)
+	- Several small fixes and clean ups
+	- Added shell_job() to skip parsing for a simple command
+
+     Sat Aug  7
+        - Added 'completion_function' hook for contexts to define
+	- Removed currying feature from DispatchTable
+	- Made fluff use our own GetOpt
+	- Added the CPAN plugin
+
+     Tue Aug 03
+        - Updated the Fish api
+
+     Mon Aug 02
+        - Made some obscure changes in the StringParser internals, it doesn't use
+	a tied grammar anymore, hope it performs better now
+	- Added 'builtin' and 'command' builtins to Z:Shell and made some changes
+	in the parse_block() logic to optimise these uses
+
+     Sat Aug 31
+        - Removed 'call' events in favour of using builtin commands for this
+	- Made the 'output' routine capture output of builtin commands
+	- Added parser flow chart to zoiddevel man page
+
+     Fri Jul 30
+	- Stripped down lot of the StringParser interface
+        - Added glob arguments and a 'path2hashref' routine to GetOpt
+	- Simplified the Utils autoloading mechanism
+
+     Wed Jul 28
+        - Finished Zoidberg::Utils::GetOpt base functionality
+
+     Tue Jul 27
+        - Added sub shells, it uses the 'SUBZ' context
+	- Removed 'SH' context in favour of 'CMD' context with the 'fork_job' bit set
+	- Removed PATH caching, it isn't needed anmore since execvp knows the path
+	this means no cache dir is used anymore
+	- Added logic for redirection operators '>|', '>&', and  '<&'
+
+     Sun Jul 25
+        - Added GetOpt to the Utils collection
+	- Removed data/settings.pl and data/grammar.pl and inlined their
+	contents in Zoidberg.pm
+	- Removed 'load_on_init' config for plugins, just use the 'loadrc' event
+	- gave 'plug' a '--list' option
+
+     Mon Jul 19
+        - Made Intel use Autoload
+	- Added completion for the 'make' and 'man' commands
+
+     Sun Jul 20
+        - Added Zoidberg::SettingsHash to Zoidberg.pm to tie the setting hash
+	modifying a setting now generates an event
+	- Added events for mode changes and plugin loading/deleting
+
+     Mon Jul 12
+        - Made PluginHash understand bare '.pm' files as plugins without hooks
+	- Made PluginHash understad 'settings', 'aliases' and 'context' in a PluginConf
+	- Added 'plug' and 'unplug' builtins to control plugin loading
+	- Fixed zoidcmd string so aliases work for non-word syntax
+	- Added the 'mode' feature to switch default contexts
+
+     Sun Jul 11
+        - Changed util funtion  "abs_path()" into "path()"
+	- Rewrote directory history feature in the 'cd' builtin
+
+     Thu Jul  8
+        - Added overload function for the array-dereference operator for
+	the return value of shell()
+	- Added a 'loadrc' event
+
+0.55 Sun Jul  4 2004
+        - Added a tied @JOBS for a perlish job-/list-control interface
+
+     Fri Jul  2
+        - Revised the parsing of escapes a bit
+	- Added regex globs
+
+     Thu Jul  1
+        - Removed positional parameters from alias expansion,
+	reserving @_ for future use
+	- Made Zoidberg switch to multiline editing mode automaticly
+
+0.54 Tue Jun 29 2004
+	Enough new stuff for a release and some cute bug fixes.
+	Hope it will do better then the last two.
+	- Fixed some bugs with regard to tab-expansion and quoting
+
+     Mon Jun 28
+	- (re-)created Help.pm
+        - deprecated usage of '.pd' files
+
+     Sun Jun 27
+        - Added documentation for Commands.pm
+	- fixed a quoting problem with "export var='value'" syntax by making
+	it a special syntax
+
+     Tue Jun 22
+        - Added heuristic enqueuing of commands when you start the command with
+	an operator instead of a command
+
+     Thu Jun 17
+        - Moved commands related to job control from Contractor to Commands
+	- Z:Fish::Commands now uses AutoLoader
+
+     Wed Jun 16
+	- Made aliases work more like macros, they can now contain logic and
+	positional parameters
+		     
+
+0.53 Thu May 27 2004
+     Oops, another "nuked" release :( Got a typo in the test script.
+
+0.52 Tue May 25 2004
+
+     Mon May 24
+        - Added another interface between Intel and ReadLine
+
+     Fri May 21
+        - Fixed bug in Intel code for shell object
+	- Added "beat" broadcast event for async events
+
+     Wed May 19
+        - Made elaborate changes in the execution order of lists of commands.
+	Job control now effectively suspends the whole list rather then one 
+	process and step over it
+
+     Wed Apr 14
+        - Added Zoidberg::Shell::scalar to make the Z:Shell AUTOLOAD function
+	work more DWIM'ish; it isn't perfect but it is pure perl.
+
+0.51 Thu Apr 08 2004
+	The 0.50 got "nuked" due to problems with the install scripts, so lets
+	try again.
+
+0.50 Mon Apr 05 2004
+        'this that time of the year again, time for a release
+
+     Tue Mar 30
+        - Added the notify_verbose setting after trying tcsh(1)
+
+     Fri Mar 26
+        - Changed $ENV{ZOIDREF} to $Zoidberg::CURRENT
+	- Changed history to Log and made it compat with ReadLine
+
+     Wed Mar 24
+        Tested zoid on IRIX - thanks to Jorik Jonker for the account
+        - Made Storable an optional dependency because it's not included in
+
+     Tue Mar 16
+        - Made Contracter send a SIGPIPE if a pipeline ends, fixes some hangs
+	- Made shell() return true on succes
+	- Removed is_exec_in_path(), just let execvp(3) figure it out
+
+     Mon Mar 15
+        - Fixed some problems in the block_parser routine by adding a "parser"
+	context sub, also made "word_list" and "filter" context subs into stacks
+
+     Sat Mar 13
+        Tested on NetBSD - thanks to S.C.Sprong for the account
+        - Introduced $ENV{CLICOLOR} to switch colours on/off
+	- made Utils/FileSystem less disk usage intensive
+	- various small fixes in parsing
+	- Fixed a set of nasty bugs concerning errors of child processes
+	and both logic list handling and notification
+
+     Thu Mar 11
+        - Made intel understand the generic completion_function api
+	- Dropped Term::ANSIScreen in favour of a hardcoded hash with ansi codes
+
+     Sun Mar 07
+        - Removed Buffer plugin, replaced it by the ReadLine plugin
+	using Term::ReadLine::Zoid is recommended
+	- Removed Prompt plugin, replaced it by a new module called Env::PS1
+
+     Thu Jan 29
+     	Tested on OS X / Darwin, this resulted in two bug fixes
+	- Worked on a more sane job data struct
+
+     Mo Jan 26 2004
+        - Made Intel expand filenames after a ':' or 'VAR=', expand filenames in
+	perl code and expand environment variables in both perl and shell.
+	- Added diagram of the process flow to zoiddevel
+	- Cleaned up old stub code
+
+     Su Jan 25 2004
+        Items below all reported by Markus "Psh2" Peter (a.k.a Warp)
+        - Added small hack for darwin to the default zoidrc
+	- Fixed bug in History when history is not writable
+	- Dropped version numbers in Requires.pd because this forces people to 
+	install all dependencies up to date without necessity
+
+     Fr Jan 23 2004
+        - Made _dezoidify() behave a little more hybrid, environment variables
+	in lower case are also interpolated now
+	- Fixed some bugs with interpolating of variables and globs in the
+	tab expansion
+	- Added "appdir" action to build process
+
+     Fr Jan 16 2004
+        - Moved Zoidberg's build process to Module::Build
+
+0.42 Sa Jan 10 2004
+        - Tested compat for 5.6.2, fixed a few oddities
+
+     Th Jan 08 2004
+        - Changed parsing order for word expansions so $_ / $shell{topic}
+	now also works for shell context
+
+     We Jan 07 2004
+        - Aliases can now be recursive
+
+     Mo Jan 05 2004
+        - Added a filter layer before context parsing
+
+     Sa Jan 03 2004
+        Nerd weekend at carl0s' place -- fooled around with the parser
+        - Added redirection for block contexts
+	- Added local env syntax for all contexts
+	- Fixed bug with multiple procs in pipeline segment
+	- Cleaned up the interfaces for custom contexts
+	- Added wantarray detection to shell()
+
+     Th Jan 01 2004
+        - Removed Zoidberg::Parser and merged it's code into Zoidberg
+
+     Mo Dec 29 2003
+        - Done some cleanups and some prep to dance with the parser
+	- Removed Term::ANSIColor deps in favour of Term::ANSIScreen
+
+     We Dec 10 2003
+        - added environment variables to dezoidify(), scalars just get translated,
+	arrays get imported from Env.pm
+	- fixed @ISA bug in expanding objects
+	- added dezoidify for { .. } syntax, but not for perl{ .. } syntax
+
+     Mo Dec 08 2003
+        - added DESTDIR make variable to allow packaging as an ebuild
+
+     Sa Dec 06 2003
+        - added currying for closures to DispatchTable
+	- carl0s made meta key combo's work transparent
+
+0.41 Fr Dec 05 2003
+        Maintenance release, also know as "the sinterklaas release" (yes you have 
+	to be dutch to pronounce that correctly). Not really new features but some
+	nice bug fixes and clean-ups.
+        - replace all parent->print() calls with output()
+	- removed overload for chdir, ENV{PWD} is now set at precmd event
+	- small bug fixes in Buffer and Intel
+	- Update lot of pod documentation
+
+     We Dec 03 2003
+        - small bug fix in Parser
+        - small bug fixes in Buffer and Buffer::Meta::Vim
+
+     Tu Dec 02 2003
+        Re-routing some interface stuff
+	- changed $self in eval scope to $shell
+	- make Zoidberg inherit from Zoidberg::Shell
+	- Zoidberg::Eval now only imports from Z::Shell
+	- Make shell() in Z::Shell the main exec interface
+	- added system() to shell so allow DispatchTable can be used to call
+	system commands, OO only to avoid conflicts with perlfunc system()
+	- make Zoidberg::AUTOLOAD also call Z::Shell::AUTOLOAD
+
+     Fr Nov 28 2003
+        - Fixed bug that caused non existing commands to die silently
+	- made error string less informative :)
+
+     Tu Nov 25 2003
+     	Done all kinds of namespace cleanup
+        - Fixed Zoidberg::Utils cluster interface using a modified version 
+	of Exporter::Tidy
+        - Moved Output, Error and FileRoutines to the Utils namespace,
+	FileRoutines was renamed to FileSystem
+	- Renamed StringParse to StringParser
+	- Removed PdParse and StringFormat, moving pd_read to Utils.pm
+
+     Su Nov 02 2003
+        - Splitted Z::ZoidParse into Z::Parser and Z::Contractor
+
+0.40 Th Oct 30 2003
+	You may notice the numbering scheme changed, this was done to make the
+	numbering a little more CPAN friendly.
+        - Added regex to make statements starting with a sub routine calls
+        also default the context to perl
+        - Fixed bug that die'ing data files could kill zoid on init
+        - Fixed job notification
+	- Added 'events' en 'import' as keys for PluginConf
+
+     We Oct 29 2003
+        - Fixed some config issues in Fish::Buffer
+        - Rewrote Fish::Buffer::Meta::Vim
+
+     Mo Oct 27 2003
+        - Applied patch submitted by carl0s to fix a bug that at random caused 
+        jobs to hang. Seesm to work.
+
+     Sa Oct 25 2003
+        - Finished interface for custom contexts
+        - Fixed bug in Intel that appeared after upgrading to perl 5.8.1
+        - Double checked man1 docs
+
+     Fr Oct 24 2003
+        - Made Buffer use DispatchTable, tuned bindings for ^u and ^w
+        - Added support for custom contexts
+
+     Th Oct 23 2003
+        - Discovered and repaired a bug in DispatchTable's stack code
+        - Changed sub names in Zoidberg::Shell
+
+     We Oct 22 2003
+        - Fixed Config to work correctly with AppDir
+        - Fixed a bug in the hashing of plugins
+
+     Tu Oct 21 2003
+        - Fixed bug that zoidrc could kill zoid
+        - Fixed bug that aliases didn't show in expansion
+        - Made the DELETE function of DispatchTable actully pop it's stack
+	- Changed all uses of Exporter into Exporter::Tidy
+	- Removed Exporter::Inheritor and Devel::GetSymbols form cvs tree
+	- Cleaned up some documentation and updated faq
+
+     Su Oct 19 2003
+        - Added stack to error hash, callers  $DEBUG is used as stack lenght
+	- Changed ~/.history.log into ~/.history.yaml
+	- Fixed nasty bug in &Zoidberg::Eval::_dezoidify for 'arrow syntax'
+	- Cleaned up most debug code, also added '-DSome::Class' switch to fluff
+	- Added dir format for plugins
+
+     Sa Sep 13 till Su Oct 19 2003
+	Didn't record Changes for some time, so now I list what I remember
+	without specific dates -- bad project manager, no cookie ;)
+	- Created Zoidberg::PluginHash to tie $zoid->{objects}
+	- Patched DispatchTable to interact with PluginHash
+	- Made DispatchTable stacking so it can also be used for {events}
+	- Merged all config for fluff, plugins and Z::Config.pm into {settings}
+	- Revised some of the make process; creating appdirs goes more smoothly now
+	see also Install
+	- The dir ~/.zoid isn't used by default but can overload share/zoid
+	- Share doesn't contain a 'skel' subdir anymore but now has
+	the subdirs 'data' and 'plugins'
+	- Zoidberg.pm doesn't have a init() sub anymore, this fixed some 
+	bootstrap bugs between fluff and Zoidberg
+	- Started work on Zoidberg::Utils, this should ultimatly bundle all 
+	the library stuff
+	- added read_data_file() to Utils, should be used instead of pd_read
+	- Created Zoidberg::Output to contain output stuff to be bundled in Utils,
+	currently Zoidberg.pm has backward compatible code.
+	- Added Buffer->ask for later usage in plugins
+	- Moved a lot of unused modules out of cvs tree
+
+     Su Aug 03 2003 
+	- Added array support for sh-like syntax
+
+     Mo Jul 28 2003
+	- Added dirstack functionality to Fish::Commands
+
+     Su Jul 27 2003
+	- Added variable expansion for shell-like syntax
+	- Added fake arrays for shell-like syntax
+
+0.3c Fr Jul 18 2003
+	Minor release, some bugfixes, we wanted to have the latest
+	version available for YAPC::Europe.
+
+     Tu Jul 14 2003
+	- added support for rcfiles
+	- added some command line switches
+	- made Zoidberg::Config values potentially search paths
+
+     Su Jul 13 2003
+	- rewrote Zoidberg::Shell, initial version works
+	- changed the Eval AUTOLOAD function, eval now uses the 
+	one from Zoidberg::Shell
+	- Added a test (t/90_full.t) running a complete zoid 
+	in non-interactive mode :)
+
+     Th Jul 10 2003
+	- updated most documentation
+	- removed deprecated plugin docs
+
+0.3b Mo Jul 07 2003
+	Basicly a bugfix release, but also two features restored.
+
+     Su Jul 06 2003
+	- Restored tab expansion for zoid-syntax
+	- Restored basic support for redirections
+
+     Sa Jul 05 2003
+	- A critical bug was fixed in the execution of logic lists.
+
+     Fr Jul 04 2003
+	- Fixed a bug so now the parser silently ignores empty blocks, this
+	shows for example after a '&' or ';' command delimiter.
+	- Carl0s fixed a bug in the job control code which caused a lot of
+	zombie processes.
+	- Initial IPC code added.
+
+0.3a Tu Jul 01 2003
+	Finally a new release with /some/ level of stability.
+	Enjoy !
+
+     Mo Jun 30 2003
+     	- Fixed some issues with escape chars in Intel
+
+     Su Jun 29 2003
+	- Carl0s added another mini buffer: SearchHist.
+	use ctrl_r to open search history for a command.
+	- Fixed some issues with escape chars in StringParse
+
+     Fr Jun 27 2003
+	- Fixed lot's of small bugs in the make process.
+	- Changed "LOCAL_DIR" var to "APPDIR"
+
+0.3a_pre1 Tu Jun 24 2003
+ 	Releasing 0.3a_pre1 to test the make and release process
+	- Fixed Intel module for the new StringParse system
+
+     Th Jun 19 2003
+	- Added Zoidberg::Error for OO exception handling
+
+     We Jun 04 2003
+	- Implemented new StringParse module, fixes lot of bugs.
+	- Changed the parse tree format.
+	- Patched ZoidParse and Eval to work with new parse tree format.
+
+     Su Jun 01 2003
+	- Added Zoidberg::DispatchTable to tie a hash with commands 
+	and/or functions, it understands "->" notation.
+
+     Mo May 12 2003
+        - Added support for $CDPATH, upgraded "cd" builtin.
+
+     We May 07 2003
+        - Fixed major bugs in make process, it's now CPAN compatible.
+
+     Sa Apr 19 2003
+	- Added Zoiderg::Config
+
+     Su Apr 06 2003
+     	- Removed the MOTZ plugin, this was just legacy.
+	- Tuned the interface of the FileRoutines module, seems a bit faster now.
+
+     Mo Mar 31 2003
+	- Both events and commands are now defined in a plugins config file,
+	thus allowing zoidberg to 'wake up' plugins when needed.
+	- Commands defined by a plugin are integrated with both the perl syntax
+	as with the command syntax variants.
+
+     We Mar 19 2003
+	- All plugins now have their own config files. This makes moving plugins 
+	around a bit easier.
+
+     Tu Mar 18 2003
+	- Config is not dumped on exit any longer, change of mind.
+	- The FileRoutines cache now dumps using Storable, this speeds up the
+	initialisation.
+
+0.2b Su Feb 16 2003
+	- Module namespace cleaned up for CPAN
+
+0.2  We Feb 12 2003
+	- Plugins get loaded on use, not on init, thus reducing the footprint of
+	shells running in the background.
+	- Exec comand fixed, this solves a lot of bugs.
+	- Lots of other small fixes.
+
+     Jan       2003
+	- ZoidIPC works over domain sockets, providing transparent objects.
+	- Partially rewrote the input buffer, allowing multiple modusses.
+	- Vi commands and keybindings are fairly complete (usable).
+
+     Fr Jan 10 2003
+	Lets try another approach to Makefile.PL, all make targets now link to
+	files in the 'm/targets' directory.
+	- We no longer use ExtUtils::MakeMaker
+	- Install everything with "make all"
+	Try "perl Makefile.PL && make help" for more info.
+
+     We Jan  8 2003
+	Making a fresh cvs directory -- this will make the directory structure
+	clean and fit for packaging. As a result there will no longer be a 
+	separate ProgramFiles package. Also the release scripts etc. have
+	been updated to the new structure.
+
+0.1c Mo Jan  5 2003
+	Critical bug in t/use_ok.t -- 0.1b won't install on systems without cvs
+	modules installed :((
+	- Intel now knows "multi set" results -- allowing for more flexability
+	- Zoid now waits correctly for foreground jobs
+
+0.1b Tu Dec 31 2002
+	Major change in the way pipes are handled so time for a new devel release.
+	Also zoid as inlog shell seems to be working.
+	- New pipes implementation, you now can use all context types in pipes.
+	- Started writing user documentation.
+	- Tab expansion more stable, expanding objects works again.
+	- More keybindings implemented.
+	- More escape codes to use in the prompt.
+	- Command line options fixed.
+	Prompt respawns to fast at the moment.
+
+0.1  Fr Dec 20 2002
+	We decided to make an unstable release since there are lot of fixes since the
+	0.04 release, but there is still a lot to do before releasing a stable version.
+	The version numbering scheme changed today:
+	- odd numbered minor numbers will only be used for (unstable) devel versions
+	- versions will have only one major and one minor number for real changes
+	- a second minor number points to (small) bug fixes (like typo's)
+	So today we release the 0.1-devel-unstable version, the first stable release
+	will be 0.2, we are looking forward to that release :)
+
+     Th Dec 19 2002
+	denthijs wrote:
+	> zoid running natively on macosx without problems
+	> config: perl 5.6.0 , osx 10.2
+	> i needed a lot of perlmods (ofcourse) but everything went like a charm
+
+	- "zoid in zoid"-bug fixed -- zoid now takes back terminal control after
+		leaving a second zoid, or for instance after leaveing a sshclient.
+
+     We Dec 18
+	- made all help files pod and upgraded the help system -- Pod::Text::Color is nice
+	- added some general help files
+	- added zoid.pod -- now "man zoid" works
+	- made fluff and install.pl to use Getopt::Long
+
+	Dec 15
+	- also added Ctrl-BackSpace
+
+     Tu Dec 17 2002
+	- thx to carl0s keybindings finally work under debian "sid" and redhat 8.0
+		non-blocking reading from STDIN seems to be malicious.
+
+     Fr Dec 13 2002
+	- added a ~/.zoid/plugins dir -- dont bug the admin to install plugins
+	- added Ctrl-left and Ctrl-right in the buffer
+
+	Dec    2002
+	Created the zoidberg-devel mailing list.
+	- "less" finally works in pipes
+	- the Trog object and the simpel parser will
+		be taken together to form ZoidParse.pm
+	- apart from Intel the whole parsing structure is now
+		context oriented
+
+     Th Nov 29 2002
+	- we now use the &pound; sign as special sigil
+		also &pound;_ as special topic :))
+	- fixed exit status both intern and extern
+
+     Th Nov 28 2002
+	- parser is now fully context bassed & hot swappable
+	- created namespace for persistent vars
+	- carlos implemented a SQL plugin
+	- added file expansion
+	- inline:: glue -- use C on your perl prompt
+
+0.04    Nov 22 2002
+	Released Zoidberg 0.04
+	This will probably be the last version of the 0.0x series.
+	- many bug fixes
+	- rewrote basic parsing
+	- added '&&', '||' and ';'
+	- added commandline options to "zoid.pl"
+
+        Nov 7 2002
+	- The new input parser is in place (Trog.pm by carlos)
+	- Pipes are (partially) implemented
+
+0.03 Mo sep 30 2002
+	- multi line editting done
+	- changed from ".ph" to ".pd"
+		more powerfull dumper - can even decompile closures
+	- added much intel to tab expansion
+	- added help functionality
+	- added a few commands
+	- many bug fixes ...
+
+0.02 Fr sep 27 2002
+	- included basic functions by rewriting a personal project
+	- created a sourceforge project
+	- prepared first release
+
+0.01  Wed Sep 25 18:19:48 2002
+	- original version; created by h2xs 1.21 with options
+		-AX -n Zoidberg
+
+0       Oct     2002
+	Freshmeat can't give me a perl shell I really like 
+	better then bash.
+	- done some hacking on a perl shell
+
+
+-3    Somewhere spring 2002
+	project 'fluff' - intended to be a MUD client
+	- MUD-like shell environment
+	- route-planner for Ahnk-Morpork

@@ -1,0 +1,154 @@
+
+# This file is automaticly generated from the wiki page.
+# Don't edit this file, use the wiki.
+
+=head1 NAME
+
+zoidfaq - Frequently Asked Questions about Zoidberg
+
+=head1 DESCRIPTION
+
+
+=head2 About the project
+
+=head3 What's with the name ?
+
+If you don't know where the name comes from, you should watch more cartoons.
+
+Quoting some futurama episode about a certain doctor Zoidberg :
+
+ "He's a weird monster who smells
+     like he eats garbage and does"
+
+This program was from the very beginning intended to become a huge and bloated monster.
+
+=head3 Is it stable yet ?
+
+B<NO !> If it is stable we'll call it 1.00 .
+
+=head3 Is it safe to use it already ?
+
+Kind of, as long as you don't try too fancy stuff with too many privileges.
+
+=head3 But why !?
+
+First of all because we like Perl better then shell script, and with the right glue 
+you can do real powerful things with Perl statements in your shell.
+
+Secondly because we wanted a platform to try out some experimental shell features,
+and it is really nice to be able to do so in Perl in an object oriented fashion.
+With zoid you don't need to patch archaic C code just to add for example 
+another builtin function to your shell.
+
+
+=head2 Features
+
+=head3 How do I turn off ansi colours ?
+
+Set the environment variable CLICOLOR to 0 (null).
+
+=head3 What's with the single arrow syntax ?
+
+When you type Perl code without brackets around it, zoid does a little source filtering making a arrow 'C<< -> >>' (the dereference operator) at the start of a word an alias for 'C<< $shell-> >>'. Where 'C<< $shell >>' is the main shell object. 
+
+ zoid$ ->Commands->cd(q/../)
+ # is the same as
+ zoid$ $shell->Commands->cd(q/../)
+
+=head3 I dislike jobs ending without waiting for me to hit a key :(
+
+This behaviour is called asynchronous notification.
+It is not a real default option; it is turned on in the default 'zoidrc' file.
+Remove the setting "notify" from our 'zoidrc' file or try C<< set +o notify >>.
+
+=head3 Does zoid have a "RPROMPT" ?
+
+No, but Term::ReadLine::Zoid does :)
+If you use this module try setting C<< $ENV{RPS1} >>.
+
+=head3 Does zoid support utf8/encoding .../locale ?
+
+No, but everyone agrees it would very nice if it did.
+
+The problem is that I ([Pardus]) don't do anything with localization so I don't
+have any idea how this should work, no setup to test it, no experience this.
+Since I don't use this myself for me this has a low priority.
+
+Since Perl has a lot of documentation and pragmas relating to this topic I have
+the feeling it shouldn't be to hard to have zoid at least understand character
+encoding correctly, but I'm going to need help from people with more experience 
+in using these Perl features.
+
+So If B<YOU> want utf8/encoding .../locale in zoid
+and have some experience in using character encodings in Perl please contact
+[Pardus] by email.
+
+=head3 I miss feature X, every shell should have feature X !
+
+Probably it's on the TODO list, or at some list at least.
+Try the mailing list.
+
+
+=head2 Development
+
+=head3 Can I use Zoidberg as a frontend for my own module ?
+
+Yes you can. Basicly all you need to do is to set the mode of the shell to the
+namespace of your module; see B<zoiduser(1)> for details.
+For a more elaborate example of using Zoidberg to build a custom shell application
+have a look at C<< examples/cpan.pl >> which is included in the source package.
+
+=head3 How do I get Zoid to cooperate with a GUI toolkit like Tk ?
+
+To my understanding the only thing needed to cooperate with any GUI
+toolkit is a "heartbeat" event to update the GUI. If you use our
+Term::ReadLine::Zoid library zoid will give you an event called "beat".
+Try something like:
+
+ $shell->{events}{beat} = \&update_gui;
+
+... please send me (Pardus) a copy if you have working example
+code of a gui application using zoid.
+
+
+=head2 Errors
+
+=head3 My prompt looks something like: \C{bold,blue}\u@\h \A \C{green}\W\$\C{reset}
+
+You need to have Env::PS1 installed to render that.
+Did you only install Zoidberg or did you install the full Bundle::Zoidberg ?
+
+The default zoidrc file sets this PS1 string and counts on the availabilty of 
+Env::PS1. If for some reason you choose not to use Env::PS1 you should change PS1 
+to something less obfuscated in the rc file.
+
+=head3 I upgraded to a new version of zoid and it crashes immediately !?
+
+If you use Term::ReadLine::Zoid, make sure not to use a version older then your version of Zoidberg.
+When using the latest version of zoid, the latest version of Term::ReadLine::Zoid should work.
+Try installing Bundle::Zoidberg instead of just Zoidberg.
+
+If you have all dependencies right you might need to remove/clean the directory C<< ~/.zoid >>.
+Also it might be a good idea to clean up C<< /usr/share/zoid >> and/or
+C<< /usr/local/share/zoid >> before installing a new version.
+
+=head3 I upgraded to a new version of zoid and it hangs !
+
+See the previous question.
+
+Versions of Env::PS1 prior to 0.4 are known to behave badly when used on a system with
+a case-insensitive filesystem. Install version 0.4 for the fix.
+
+=head3 I got a segfault, is this a bug ?
+
+Well, if it is a bug at all then probably it's a bug in Perl, not in zoid.
+
+Most notoriously if you use globs in Perl code, Perl 5.8.0 can segfault;
+upgrading to at least Perl 5.8.2 fixes this problem.
+
+On the other hand if zoid dies with an "attempt to free an unreferenced scalar"
+kind of message it probably is a bug in zoid, please report it.
+
+=head1 SEE ALSO
+
+L<perl(1)>, L<http://zoidberg.sourceforge.net>

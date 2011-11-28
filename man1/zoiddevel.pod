@@ -1,0 +1,679 @@
+=head1 NAME
+
+zoiddevel - Development documentation for zoid
+
+=head1 DESCRIPTION
+
+=head2 Debugging
+
+If you switch on the global debug bit and the verbose bit both your input and
+debug information are echoed to STDERR. Thus by piping both STDOUT and STDERR to
+a file you get a detailed log of what is happening.
+
+To set both bits type:
+
+ zoid$ set debug
+ zoid$ set verbose
+
+or start zoid with:
+
+ $ zoid -vD
+
+You can also get debug information from just one module by setting a global
+variable $DEBUG in the module's namespace.
+
+If you set the debug variable to a number higher than 1, you get a stack trace
+of that number of frames for each exception thrown using the C<error()> method.
+
+=head2 Structure
+
+=head3 class diagram
+
+   Zoidberg::Shell
+         /|\            Zoidberg::Contractor
+          |                 /|\   /|\
+          |__________________|     |
+               |                   |
+               |            Zoidberg::Job
+            Zoidberg              /|\
+                                   |
+                                   |
+                            Zoidberg::Job::Builtin
+
+All other classes stand on their own 
+(except perhaps for some internal helper classes).
+
+Zoidberg::Shell is an interface class to be used in perl scripts like F<zoidrc>.
+Zoidberg inheriting from it in order to make this interface also available
+through the C<$shell> object in the eval scope and to plugins. The
+Zoidberg::Contractor class contains the code to manage Jobs. Because the Job
+class also inherits from it sub-jobs are possible.
+
+=head3 object structure
+
+   main object  class Zoidberg
+     |
+     |___ {eval}          Zoidberg::Eval object
+     |___ {stringparser}  Zoidberg::StringParser object
+     |
+     |___ {jobs}          Array with Job objects
+     |      |_ items of class Zoidberg::Job
+     |
+     |___ {settings}      Settings and config hashes
+     |___ {objects}       Plugin objects       - tied Zoidberg::PluginHash
+     |___ {parser}        Custom parsing       - tied Zoidberg::DispatchTable
+     |___ {events}        Event code refs      - tied Zoidberg::DispatchTable
+     |___ {commands}      Command code refs    - tied Zoidberg::DispatchTable
+     |___ {aliases}       Alias definitions
+
+FIXME explanation
+
+=head3 Process flow
+
+       start
+         |
+         |      incomplete input - readmore
+         |    .--------------------.
+         |    |                    |
+         |    |                    |
+         V    V   string           |           tree
+   input loop     -------->  parse string      ------>  execute tree
+   Z:main_loop()             Z:shell_string()           Z:C:shell_list()
+   readline                                               |
+         A                                   reincarnate  |
+         |                                       ,------> |
+  new    |                           next chunk  |        |
+  input  |                           of blocks   |        | logic chunk
+         |                                       |        |
+         |                                       |        V
+         '---------------------------------------+---  execute job
+                                                       Z:J:exec()
+                                                          
+  Z:   = Zoidberg::
+  Z:C: = Zoidberg::Contractor::
+  Z:J: = Zoidberg::Job::
+
+The parse tree going to C<shell_list()> is a simple parse tree consisting of
+scalars and scalar references (see FIXME below). This tree is processed in logic
+chunks, corresponding to one job each.  The blocks references in a logic chunk
+are parsed by C<parse_block()> just before executing. This is where the context
+is determined and things like expansions and subtitutions are done.
+
+=head2 Parsing
+
+FIXME put devel opts in scheme
+
+  string  --> shell_string()
+  
+            split script_gram
+                   
+                  |
+                  V
+  
+  list    --> shell_list()   ... FIXME tell bout this format below
+         
+                  |
+                  V
+   
+   ref   -->  parse_block()   ... FIXME tell bout possible block forms
+                  
+                  |
+                  V                 ------------.
+                                                |
+             parse_env()                        | if word block
+                                                |
+             split word_gram                    |
+             split redir_gram                   |
+           strip env declaration     A          |
+                                     |          |
+                 |           <------------------'
+                 V                   |
+           alias expansion    -------' if multiple blocks result
+           custom filtering
+           decide context unless already known
+           - context on whole string like perl
+           - custom word lists
+           - default word context
+               
+                 |----> custom parser
+                 |
+                 |----> parse_perl()  for perl context
+                 |
+                 | for word context   ---------.  if 'FIXME'
+                 V                             |
+                                               |
+             parse_words()                     V
+  
+             expansion   ... FIXME list them in zoiduser
+             (globs)
+
+A block that originates from C<shell()> or C<Zoidberg::Shell::AUTOLOAD> is
+recognised as having already been split into words. This means the parsing of
+words, redirections and environment declarations is skipped. Only alias are
+checked so this interface is consistent in command names etc. with the
+commandline interface.
+
+If you use C<builtin()> or C<command()>, these are understood as simple command
+with parsed words and effectively all parsing is skipped.
+
+=head3 Parse tree
+
+FIXME tell about the blocks used in lots of hooks
+
+FIXME renice this stuff
+
+This part describes the form of a parse tree as used between the various
+Zoidberg objects.
+
+=head4 Example
+
+ # Commandline input:
+ 
+ $ ls -al | perl{ while (<STDIN>) { print $_ }  }abc && echo done
+ 
+ # Would be parsed to:
+ 
+ [ 
+   [{context => 'CMD'}, qw/ls -al/],
+   [{context => 'PERL', opts => 'abc'}, q{ while (<STDIN>) { print $_ } } ],
+   'AND',
+   [{context => 'CMD'}, qw/echo done/]
+ ]
+ 
+ 
+ 
+ # Commandline input:
+ 
+ $ cd .. && ls -al ; cp dus ~/tmp/ &
+ 
+ # Would be parsed to:
+ 
+ [
+   [{context => 'CMD'}, qw/cd ../],
+   'AND',
+   [{context => 'CMD'}, qw/ls -al/],
+   'EOS',    # End Of Statement
+   [{context => 'CMD'}, qw{cp dus ~/tmp/}],
+   'EOS_BG'  # background statement
+ ]
+  
+ # FIXME an example with redirections
+
+There are a lot more meta fields like 'fork_job', FIXME where to read bout them?
+
+=head4 Basics
+
+A parse tree is an array consisting of blocks and tokens. A block can be any
+kind of shell code and is stored in a nested array.  Blocks directly following
+each other are supposed to be a pipeline.  A token is a delimiter between
+blocks.
+
+The first field of a block is a hash which contains information about the block,
+all other field in a block make up the content.  The most important information
+about a block is the context, which tells the parser how to execute the block.
+You are  free to store all kinds of specific information in this first field,
+but some key names are reserved.
+
+FIXME reserved meta fields
+
+=head4 Pseudo parse trees
+
+These are forms that can be used with the C<shell()> function provided by
+L<Zoidberg::Shell>. Just as by the real parse tree blocks of code are references
+and tokens are plain scalars.  A block that is a scalar reference will be split
+into words and parsed completely (although still expected to be one block). A
+block that is an array reference will be considered to be completely parsed if
+the first element is a hash reference and the context defined, else it is
+considered a word list, possibly with meta data defined in the first element.
+
+  # for example "ls -al | perl{ while (<STDIN>) { print $_ }  }abc && echo done"
+  # can be executed by calling :
+  shell(
+    [qw/ls -al/],
+    \'perl{ while (<STDIN>) { print $_ }  }abc',
+    'AND'
+    [{context => 'CMD'}, qw/echo done/]
+  );
+
+Using this kind of pseudo trees only makes sense if you are lazy or you don't
+know exactly what the command is but you have some clues you want to pass to the
+parser.
+
+=head4 Built-in contexts
+
+The contexts 'PERL', 'CMD' and 'SUBZ' are used by the built-in parser: 'PERL'
+flags code as perl code, 'CMD' as a system or built-in command and the 'SUBZ'
+context is used for sub-shells.
+
+=head3 Parser hooks
+
+The hash called 'parser' in the main object is a tied hash of the class
+Zoidberg::DispatchTable. This hash contains stacks of code refs to be called
+at certain parser stages.
+
+Subroutines in these stacks should in general return a BLOCK (a array ref with a
+meta field and words) at success and C<undef> otherwise.
+
+=over 4
+
+=item filter BLOCK
+
+Stack called before contexts are decided and before the block is splitted into
+words. Used to claim a block for a certain context by setting the 'context'
+field in the meta hash.
+
+=item word_expansion BLOCK
+
+Allows you to define a custom expansion routine.
+
+=item word_list BLOCK
+
+Stack with a dual function: used to claim a block for a certain context
+B<after word splitting>, but also for listing completions for this context.
+
+If called in C<wantarray> context should return a list of possible completions
+for the first word in BLOCK.
+
+If not in C<wantarray> context can either return a block with the 'context'
+field set to claim this block for a certain context.
+
+=back
+
+You can define a custom context by putting a sub-hash into the parser hash
+(using the context name as the key). See L<Custom contexts> for the keys to be
+defined in such a sub-hash (note that some of the stacks are included there also
+- but these won't go in the sub-hash).
+
+=head2 Settings
+
+Notice that every plugin has it's own config hash in the settings hash, it is
+suggested that settings only affecting one plugin are placed in this sub-hash.
+This rule is broken for some settings required by the posix specification of the
+C<set> built-in.
+
+FIXME list these posix settings somwhere
+
+Below are listed advanced settings only needed for development.
+Common settings can be found in L<zoiduser>.
+
+The parser settings can be set globally, but also per block.
+FIXME they should also be settable per mode/context
+
+=over 4
+
+=item split_script
+
+Split a command according to the script grammar.
+
+=item split_words
+
+Split a command into words.
+
+=item parse_fd
+
+Parse redirections.
+
+=item parse_env
+
+Parse environment declerations.
+
+=item parse_aliases
+
+Check for aliases.
+
+=item parse_def_contexts
+
+Use the default contexts PERL and CMD.
+
+=item expand_comm
+
+Expand commands in "word" contexts.
+
+=item expand_param
+
+Expand parameters in "word" contexts.
+
+=item expand_path
+
+Expand globs in "word" contexts.
+
+=item debug
+
+Turn on _all_ debug messages.
+
+=item plain_words
+
+This is not a global setting, but if used for a single block it is identical to
+turning off all parser settings except for 'parse_aliases'.
+
+=back
+
+=head2 Events
+
+The hash called 'events' in the main object is a tied hash of the class
+L<Zoidberg::DispatchTable>. This hash contains stacks of code refs to be called
+when certain events happen.
+
+Some events used:
+
+FIXME more events
+
+=over 4
+
+=item beat
+
+Called every idle second when using L<Term::ReadLine::Zoid>. Used for
+asynchronous stuff.
+
+=item newpwd
+
+Called if C<$ENV{PWD}> has changed. The old pwd can be found in C<$ENV{OLDPWD}>.
+
+=item prompt
+
+This event is called from the main loop just before respawning the prompt.
+It can be used to update routines.
+
+=item cmd
+
+This event is called after the input prompt with the commandline as the first
+argument. It is intended for interactive input only.
+
+=item envupdate
+
+This event is called after the spawning of every job. Like 'prompt' it can be
+used for update routines; since 'envupdate' is called more often then 'prompt',
+use 'prompt' if it makes no difference, 'envupdate' should only be used for
+atomic updates.
+
+=item loadrc
+
+Called after all the plugins are loaded, it triggers reading the rcfiles. Can be
+used by plugins to set hooks that depend on other plugins being loaded.
+
+=item exit
+
+Called just before C<round_up()>, used as replacement for F<.bash_logout>.
+
+=item set_*
+
+Whenever a setting is changed a event is called which is the name of the setting
+prefixed by 'set_' . Arguments are the new value and the old value of the
+setting. When the new value is 'undef' the setting was deleted.
+
+These events are generated by the Zoidberg::SettingHash class, which is used
+to tie the settings hash of the main Zoidberg object.
+
+=item plug_*
+
+=item unplug_*
+
+Called when a plugin is loaded or deleted.
+
+=back
+
+=head2 Plugins
+
+Zoid makes extensive use of plugins to perform tasks that are not considered
+the core functionality of a shell (and very little is). A plugin has three ways
+of communicating with the the shell and other plugins:
+
+=over 4
+
+=item builtins
+
+These are commands implemented in the shell to offer some function to both the
+user and other plugins.
+
+=item events
+
+A plugin can both trigger events ('broadcast') or listen to certain events. When
+an event is triggered all code 'listening' to it is executed, this is a
+one-to-many dispatcher.
+
+=item contexts
+
+Used to extend the code types zoid knows. By default only command syntax and
+perl are recognized, but a plugin might want to add other syntaxes.
+
+A context is typically used when it is unconvenient to define all commands the
+plugin can handle as builtins, or when a plugin want to handle the whole code
+block instead of the individual (possibly expanded) words.
+
+Also some methods are provided to hook into certain parser stages.
+
+=back
+
+Some general tips for writing plugins:
+
+=over 4
+
+=item *
+
+See the L<Zoidberg::Utils> namespace for common functions. Using these functions
+will make your plugin more coherent with the rest of the shell.
+
+=item *
+
+Try to use api's, not data structures; unless the structures are specified in
+the documentation they can change without notice. Api's are in general more
+stable.
+
+=item *
+
+Try to use L<AutoLoader> if you have a lot of optional functionality.
+
+( When using AutoLoader make sure your subs have names that are case-insensitive
+unique, else you'll run into problems on OS X. )
+
+=item *
+
+When you need hooks between two plugins, use a builtin command. Make sure to
+find a name for it that doesn't overload a normal system command. When you need
+various hooks, see if they can be combined in one builtin command using options
+(see L<Zoidberg::Utils::GetOpt>). Also check if other shell implementations
+(like bash, tcsh or zsh) have builtins for similar funtions and try to make your
+interface consistent.
+
+When calling a builtin as a hook the most efficient way is to use the
+C<< $shell->builtin($cmd, @args) >> method in a list context. Using this method will cause a lot of parser levels to be skipped, also the command won't be
+subject to things like the current command mode. Using list context makes the
+method return directly without bothering with overloaded objects.
+
+=back
+
+=head3 PluginConf
+
+A plugin configuration file can use the following keys:
+
+=over 4
+
+=item module
+
+The class to bless the plugin object in.
+
+=item config
+
+Hash with plugin specific config stuff. For plugins that inherit from
+Zoidberg::Fish this will automatically become the C<{config}> attribute.
+
+=item commands
+
+Hash linking command names to subroutines. 
+See L<Zoidberg::DispatchTable> for the string format used in this hash.
+
+=item export
+
+Array with commands automatically linking to a subroutine of the same name 
+in the plugin object.
+
+=item events
+
+Like C<commands> but used for events.
+
+=item import
+
+Like C<export> but used for events.
+
+=item settings
+
+Supply some default settings. Used for global settings, plugin settings
+should be in the 'config' hash.
+
+=item aliases
+
+Supply some default aliases.
+
+=item context
+
+Add context hooks.
+
+=back
+
+If you want your plugin to be loaded as soon as possible, you can use
+the L<loadrc> event to load your plugin. For plugins inheriting from
+L<Zoidberg::Fish> C<< loadrc => 'plug' >> will work.
+
+=head4 Custom contexts
+
+Typically you'll want to set a custom context from a plugin. To do this you
+either provide some context hooks in the L<PluginConf> or you set a L<loadrc>
+event to load your plugin and then setup the context parser and handlers
+routines from the plugin's C<init()> routine, using the C<add_context()> method
+in C<Zoidberg::Fish>.  If you defined a L<word_list> or L<filter> hook it makes
+sense to use the second method. The plugin would be loaded anyway when the first
+command is parsed.
+
+A context config hash can contain the following routines:
+
+FIXME more verbose description
+
+=over 4
+
+=item word_list BLOCK
+
+If you want your context to work with words you should have this hook to recognize
+and list commands.
+On wantarray it should return a list of possible completions for the word in C<$$block[1]>;
+else it  should check whether the word is a recognized command and return true on success.
+In both cases it is also allowed to return a block ref, this is for the more advanced options.
+
+=item parser BLOCK
+
+Here you can set options like for example C<fork_job> or C<no_words> for your context.
+
+=item handler BLOCK
+
+This is the part where your command gets executed.
+
+=item completion_function WORD, LINE, START, END
+
+Hook used by the Intel plugin for custom completion.
+
+=item intel BLOCK
+
+Hook used by the Intel plugin for custom completion.
+
+=item filter BLOCK
+
+Hook to filter blocks before they are parsed, this can be used for example
+for custom redirection code.
+
+Be aware that the a block might be filtered twice with the same meta hash,
+the second time should reset any meta fields set by the first time.
+
+=item word_expansion BLOCK
+
+Hook extra expansions into the parser.
+
+=back
+
+=head3 "Hello World" plugin
+
+Here follows an example to create a simple plugin with the "hello_world"
+builtin.
+
+First create a dir F<~/.zoid/plugins/HelloWorld>.
+
+Next create a module, for example :
+
+  package HelloWorldZoid;
+  
+  # Zoidberg::Fish is the base class for plugins
+  use Zoidberg::Fish;
+  our @ISA = qw/Zoidberg::Fish/;
+  
+  # Zoidberg::Utils provides the output method
+  use Zoidberg::Utils;
+  
+  # no need for a constructor, bootstrap with init
+  sub init { $$_[0]{config}{string} ||= "Hello world !" }
+  
+  # and in this sub we actually print the string
+  sub hello_world { output $$_[0]{config}{string} }
+  
+  # this will be called when the plugin is unloaded
+  sub round_up { output "someone help me" }
+  
+  1; # keep require happy
+
+Save the module as F<~/.zoid/plugins/HelloWorld/HelloWorldFish.pm>.
+
+Then create a config file, this is just a perl script returning a config hash.
+
+  {
+    module => q/HelloWorldFish/,
+    config => {
+      # This hash will be both accessible as $shell->{settings}{HelloWorld}
+      # and as $shell->HelloWorld->{config}
+      string => q/Hello cruel world !/
+    },
+    export => ['hello_world'],
+  }
+
+Save the config file as F<~/.zoid/plugins/HelloWorld/PluginConf.pl>.
+
+After restarting zoid, you should have a builtin command "hello_world" that
+prints the string "Hello cruel world !", and an object called "HelloWorld".  Of
+course you guessed already that you can control the string that will be printed
+from the config file, and also that it defaults to "Hello world !".  On run-time
+this string is available under C<< $shell->{settings}{HelloWorld}{string} >>, it
+can be changed at any time.
+
+=head1 ENVIRONMENT
+
+The following environment variables are used be Zoidberg.
+
+=over 4
+
+=item ZOIDPID
+
+Contains the process id of a parent zoidberg shell, intended to be used for an
+IPC mechanism.
+
+=item ZOIDREF
+
+In forked child processes this variable contains a stringyfied version of the
+current Zoidberg object in charge. The parent process has a global hash
+C<%Zoidberg::OBJECTS> which maps these strings to the original references.  It
+is intended that an IPC mechanism uses this hash to convert strings back to
+references.
+
+This value should correspond to the object stored in the global
+C<$Zoidberg::CURRENT> at the time of forking.
+
+In secondary scripts it is better to use C<< Zoidberg::Shell->current() >>.
+
+TODO this mechanism seems to have some problems
+
+=item ZOIDCMD
+
+Contains the string that caused the current command to be executed. Can be used
+by a command to inspect its arguments as they were before path expansions etc..
+
+=back
+
+=head1 SEE ALSO
+
+L<perl>(1), L<http://zoidberg.sourceforge.net>
+

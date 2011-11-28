@@ -1,0 +1,99 @@
+ Zoidberg - a modular perl shell, version 0.96
+===============================================
+
+  http://zoidberg.sourceforge.net
+ 
+  Zoidberg provides a modular Perl shell written, configured, and operated 
+  entirely in Perl. It aspires to be a fully operational login shell with all 
+  the features one normally expects. But it also gives direct access to Perl 
+  objects and data structures from the command line, and allows you to run Perl 
+  code within the scope of your commandline.
+
+INSTALLATION
+
+  First of all you need perl <www.perl.org>, it is very likely this is allready
+  on your system. Zoidberg is tested for perl versions 5.6.1 and 5.8.2, but
+  you are welcome to also file bug reports for other versions of perl.
+
+  Modules which are not in the Zoidberg package but are depended upon by 
+  Zoidberg are listed in the file "b/Requires.pl" -- these modules are
+  available from CPAN <http://cpan.org>.
+
+  On most clean systems you will need to install:
+    Module::Build
+    Exporter::Tidy
+
+  The following are also recommended:
+    Env::PS1
+    Term::ReadKey
+    Term::ReadLine::Zoid
+
+  To install the package untar it, change to the new dir and type:
+    > perl Build.PL
+    > ./Build
+    > ./Build test
+    > ./Build install
+
+  To install in your home dir try:
+    > ./Build install install_base=$HOME/apps  
+  or
+    > ./Build appdir
+    > cp -R Zoidberg/ $HOME
+
+  To see all possible build actions type:
+    > ./Build help
+    > ./Build help action
+
+  Zoidberg uses the installation targets 'etc', 'share' and 'doc' which are not
+  used by Module::Build by default. Due to this these are very linux-centric.
+  To override these installation (and configuration) paths do something like:
+    > perl Build.PL --install_path etc=/my/etc \
+                    --install_path doc=/my/doc \
+		    --install_path share=/my/share
+
+  If you need to add a directory to the include path -for example the install
+  path where you installed the dependencies- use the PERL5LIB environment
+  variable, using "perl -Isomedir" won't do.
+
+  For advanced installation options, see the Module::Build documentation.
+
+CONFIGURATION
+
+  See the zoiduser(1) manual page.
+
+BUGS AND LIMITATIONS
+
+  To submit bug reports visit http://rt.cpan.org or mail the author.
+
+  Currently we test with perl 5.8.2 and perl 5.6.2. 
+  Please _do_ bug report for other  perl versions.
+
+  The Zoidberg shell is being developed for GNU/Linux, but should also run on
+  other flavours of unix. Please _do_ bug report bugs or OS dpendent problems
+  for other operatings systems.
+
+AUTHORS
+
+  Jaap Karssenberg || Pardus [Larus] <pardus@cpan.org>
+  R.L. Zwart, <rlzwart@cpan.org>
+
+COPYRIGHT AND LICENCE
+
+  Copyright (c) 2002 Jaap G Karssenberg. All rights reserved.
+  This program is free software; you can redistribute it and/or
+  modify it under the same terms as Perl.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See either
+  the GNU General Public License or the Artistic License for
+  more details.
+
+  http://www.perl.com/language/misc/Artistic.html
+  http://www.gnu.org/copyleft/gpl.html
+
+
+
+
+
+  Share and enjoy!
