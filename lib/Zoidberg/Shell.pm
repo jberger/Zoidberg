@@ -4,7 +4,6 @@ our $VERSION = '0.96';
 
 use strict;
 use vars qw/$AUTOLOAD/;
-use UNIVERSAL qw/isa/;
 use Zoidberg::Utils qw/:error :output path getopt/;
 use Exporter::Tidy
 	default	=> [qw/AUTOLOAD shell command builtin/],
@@ -39,7 +38,7 @@ sub any {
 	return $Zoidberg::CURRENT;
 }
 
-sub _self { (isa $_[0], __PACKAGE__) ? shift : $Zoidberg::CURRENT }
+sub _self { ( eval{ $_[0]->isa( __PACKAGE__ ) } ) ? shift : $Zoidberg::CURRENT }
 
 # ################ #
 # Parser interface #
