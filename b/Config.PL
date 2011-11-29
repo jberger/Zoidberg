@@ -6,13 +6,13 @@ my $b = Module::Build->current;
 $b->read_config(); # work around M:B bug
 
 my ($rc, $data) = (
-	'\''.$b->install_destination('etc').'/zoidrc\'',
-	'\''.$b->install_destination('share').'\''
+	'\''.($b->install_destination('etc')||'').'/zoidrc\'',
+	'\''.($b->install_destination('share')||'').'\''
 );
 
 my %conf = (
-	rcfiles   => '[( $ENV{PAR_TEMP} ? "$ENV{PAR_TEMP}/inc/etc/zoidrc" : '.$rc.' ), "$ENV{HOME}/.zoidrc", "$ENV{HOME}/.zoid/zoidrc"]',
-	data_dirs => '["$ENV{HOME}/.zoid", ( $ENV{PAR_TEMP} ? "$ENV{PAR_TEMP}/inc/share" : '.$data.' )]',
+	rcfiles   => '[( $ENV{PAR_TEMP} ? "$ENV{PAR_TEMP}/inc/etc/zoidrc" : '.$rc.' ), "$ENV{HOME}/.zoidrc", "$ENV{HOME}/.zoid/zoidrc", dist-dir(\'Zoidberg\').\'zoidrc\']',
+	data_dirs => '["$ENV{HOME}/.zoid", ( $ENV{PAR_TEMP} ? "$ENV{PAR_TEMP}/inc/share" : '.$data.' ), dist-dir(\'Zoidberg\')]',
 #	cache_dir => '$ENV{XDG_CACHE_HOME} || "$ENV{HOME}/.cache"'
 );
 

@@ -19,6 +19,8 @@ no warnings; # yes, undefined == '' == 0
 
 require Cwd;
 require File::Glob;
+use File::ShareDir qw/dist-dir/;
+
 require Zoidberg::Contractor;
 require Zoidberg::Shell;
 require Zoidberg::PluginHash;
