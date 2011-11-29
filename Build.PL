@@ -32,6 +32,7 @@ my $build = ModuleBuildZoid->new(
 		'lib/Zoidberg/Fish/Intel.pm',
 		'lib/Zoidberg/Fish/Log.pm',
 	],
+	share_dir => 'share',
 );
 
 $build->MyInit;
