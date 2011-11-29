@@ -7,5 +7,6 @@ $VAR1 = {
           'Data::Dumper' => 0,
           'Env' => 0,
           'AutoLoader' => 0,
-          'Cwd' => 0
+          'Cwd' => 0,
+          'File::ShareDir' => 0,
         };
