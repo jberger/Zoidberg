@@ -6,13 +6,8 @@ my $b = Module::Build->current;
 $b->read_config(); # work around M:B bug
 
 my ($rc, $data) = (
-	$b->notes('AppDir') ? (
-		'"$_base_dir/Config/zoidrc"',
-		'"$_base_dir/share"'
-	) : (
-		'\''.$b->install_destination('etc').'/zoidrc\'',
-		'\''.$b->install_destination('share').'\''
-	)
+	'\''.$b->install_destination('etc').'/zoidrc\'',
+	'\''.$b->install_destination('share').'\''
 );
 
 my %conf = (

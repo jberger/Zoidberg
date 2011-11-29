@@ -73,41 +73,6 @@ sub process_MyPost_files {
 		if $self->{args}{strip};
 }
 
-# my actions
-
-sub ACTION_htmldocs {
-	my $self = shift;
-	$self->depends_on('build');
-	$self->run_perl_script( File::Spec->catfile('b', 'man2html.PL') );
-}
-
-sub ACTION_appdir {
-	my $self = shift;
-	$self->{properties}{install_base} = $self->base_dir() . '/Zoidberg';
-	$self->script_files(['bin/zoid', 'bin/AppRun']);
-
-	$self->notes(AppDir => 1);
-	$self->depends_on('build');
-	$self->depends_on('htmldocs');
-	$self->depends_on('test');
-	$self->depends_on('install');
-	$self->notes(AppDir => 0);
-
-	my @links = (
-		['./share/pixmaps/zoid64.png', './.DirIcon'],
-		['./share/AppInfo.xml', './AppInfo.xml'],
-	);
-	chdir './Zoidberg' || die $!;
-	if (eval { symlink("",""); 1 }) { # can use symlinks
-		symlink $$_[0], $$_[1] for @links;
-	}
-	else { $self->copy_if_modified(from => $$_[0], to => $$_[1]) for @links }
-	chdir '..' || die $!;
-
-	my $apprun = File::Spec->catfile($self->blib, qw/script AppRun/);
-	unlink $apprun; # clean up
-}
-
 # overloaded methods
 
 sub man1page_name { # added the s/\.pod$//
@@ -117,27 +82,18 @@ sub man1page_name { # added the s/\.pod$//
 	return $name;
 }
 
-sub install_base_relative { # Added etc, share and doc paths + AppDir hack
+sub install_base_relative { # Added etc, share and doc paths
 	my ($self, $type) = @_;
 	my %map = (
 		lib     => ['lib'],
 		arch    => ['lib', $self->{config}{archname}],
 		bin     => ['bin'],
-		( $self->notes('AppDir') ? (
-			script  => [],
-			bindoc  => ['Help', 'man1'],
-			libdoc  => ['Help', 'man3'],
-			etc     => ['Config'],
-			share   => ['share'],
-			doc     => ['Help']
-		) : (
-			script  => ['script'],
-			bindoc  => ['man', 'man1'],
-			libdoc  => ['man', 'man3'],
-			etc     => ['etc'],
-			share   => ['share', 'zoid'],
-			doc     => ['doc', 'zoid']
-		) )
+		script  => ['script'],
+		bindoc  => ['man', 'man1'],
+		libdoc  => ['man', 'man3'],
+		etc     => ['etc'],
+		share   => ['share', 'zoid'],
+		doc     => ['doc', 'zoid']
 	);
 	return unless exists $map{$type};
 	return File::Spec->catdir(@{$map{$type}});
@@ -151,19 +107,5 @@ ModuleBuildZoid - a custom subclass of Module::Build
 
 Class with some custom stuff to overloaded L<Module::Build>
 for building Zoidberg.
-
-=head1 ACTIONS
-
-=over 4
-
-=item appdir
-
-Compiles an AppDir named F<Zoidberg>.
-
-=item htmldocs
-
-Generate documentation in html format.
-
-=back
 
 =cut

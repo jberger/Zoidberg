@@ -1,6 +1,5 @@
 Artistic
 b/Config.PL
-b/man2html.PL
 b/ModuleBuildZoid.pm
 b/Requires.pl
 b/Strip.PL
