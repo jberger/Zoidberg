@@ -5,7 +5,6 @@ b/Requires.pl
 b/Strip.PL
 b/test.PL
 b/zoid.PL
-bin/AppRun
 bin/fluff
 Build.PL
 Changes
