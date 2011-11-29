@@ -12,7 +12,7 @@ sub MyInit {
 	my $self = shift;
 
 	# setup cleaner
-	$self->add_to_cleanup(qw#Makefile Zoidberg/ bin/zoid#);
+	$self->add_to_cleanup(qw#Makefile Zoidberg/ script/zoid#);
 
 	# setup script
 	$self->script_files('script/zoid');
