@@ -19,7 +19,7 @@ no warnings; # yes, undefined == '' == 0
 
 require Cwd;
 require File::Glob;
-use File::ShareDir qw/dist-dir/;
+use File::ShareDir qw/dist_dir/;
 
 require Zoidberg::Contractor;
 require Zoidberg::Shell;

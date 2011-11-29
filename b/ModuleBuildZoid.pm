@@ -15,7 +15,7 @@ sub MyInit {
 	$self->add_to_cleanup(qw#Makefile Zoidberg/ bin/zoid#);
 
 	# setup script
-	$self->script_files('bin/zoid');
+	$self->script_files('script/zoid');
 
 	# setup handlers to be called
 	unshift @{$$self{properties}{build_elements}}, 'MyPre';
