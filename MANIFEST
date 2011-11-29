@@ -6,6 +6,11 @@ b/Strip.PL
 b/test.PL
 b/zoid.PL
 bin/fluff
+bindoc/zoid.pod
+bindoc/zoidbuiltins.pod
+bindoc/zoiddevel.pod
+bindoc/zoidfaq.pod
+bindoc/zoiduser.pod
 Build.PL
 Changes
 configure
@@ -14,6 +19,10 @@ doc/examples/Menu.pl
 doc/examples/word_expansion.pl
 doc/index.html
 etc/zoidrc
+ex/examples/cpan.pl
+ex/examples/Menu.pl
+ex/examples/word_expansion.pl
+ex/index.html
 lib/Bundle/Zoidberg.pm
 lib/Zoidberg.pm
 lib/Zoidberg/Contractor.pm
@@ -31,7 +40,6 @@ lib/Zoidberg/Utils/Error.pm
 lib/Zoidberg/Utils/FileSystem.pm
 lib/Zoidberg/Utils/GetOpt.pm
 lib/Zoidberg/Utils/Output.pm
-Makefile.PL
 man1/zoid.pod
 man1/zoidbuiltins.pod
 man1/zoiddevel.pod
@@ -40,6 +48,7 @@ man1/zoiduser.pod
 MANIFEST
 META.yml
 README
+script/fluff
 share/AppInfo.xml
 share/pixmaps/zoid16.png
 share/pixmaps/zoid32.png
@@ -50,6 +59,7 @@ share/plugins/CPAN.pm
 share/plugins/Intel.pl
 share/plugins/Log.pl
 share/plugins/ReadLine.pl
+share/zoidrc
 t/00_use_ok.t
 t/30_dispatchtable.t
 t/31_ZoidbergError.t

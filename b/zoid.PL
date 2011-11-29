@@ -10,8 +10,8 @@ my $script = File::Spec->catdir($b->blib, 'script');
 mkdir $script || die $! unless -d $script;
 
 my ($zoid, $fluff) = (
-	File::Spec->catfile('bin/zoid'), 
-	File::Spec->catfile('bin/fluff')
+	File::Spec->catfile('script/zoid'), 
+	File::Spec->catfile('script/fluff')
 );
 
 open OUT, '>', $zoid or die "Could not write $zoid\n";
@@ -36,7 +36,7 @@ my $usage_parser = Pod::Text->new();
 
 # Parse complete man page to temp file
 my ($pod, $tmp) = (
-	File::Spec->catfile(qw/man1 zoid.pod/),
+	File::Spec->catfile(qw/bindoc zoid.pod/),
 	File::Spec->catfile($b->blib, 'zoid.usage~~')
 );
 $usage_parser->parse_from_file($pod, $tmp);
