@@ -40,7 +40,6 @@ sub process_MyPre_files {
 
 sub process_MyPost_files {
 	my $self = shift;
-	$self->run_perl_script( File::Spec->catfile('b', 'Config.PL') ); # not using up2date due to dynamic config
 	$self->run_perl_script( File::Spec->catfile('b', 'Strip.PL') )
 		if $self->{args}{strip};
 }

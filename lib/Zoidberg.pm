@@ -95,6 +95,17 @@ our %_settings = ( # default settings
 	naked_zoid => 0,
 	( map {($_ => 1)} @_parser_settings ),
 	##Insert defaults here##
+	rcfiles => [
+		( $ENV{PAR_TEMP} ? "$ENV{PAR_TEMP}/inc/etc/zoidrc" : '/etc/zoidrc' ),
+ 		"$ENV{HOME}/.zoidrc",
+		"$ENV{HOME}/.zoid/zoidrc", 
+		dist_dir('Zoidberg') . '/zoidrc',
+	],
+	data_dirs => [
+		"$ENV{HOME}/.zoid",
+		( $ENV{PAR_TEMP} ? "$ENV{PAR_TEMP}/inc/share" : '.$data.' ),
+		dist_dir('Zoidberg'),
+	],
 );
 our %_grammars = ( # default grammar
 	_base_gram => {

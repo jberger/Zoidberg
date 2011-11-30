@@ -1,5 +1,4 @@
 Artistic
-b/Config.PL
 b/ModuleBuildZoid.pm
 b/Requires.pl
 b/Strip.PL
