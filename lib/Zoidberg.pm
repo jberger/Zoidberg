@@ -20,6 +20,8 @@ no warnings; # yes, undefined == '' == 0
 require Cwd;
 require File::Glob;
 use File::ShareDir qw/dist_dir/;
+use File::Copy qw/copy/;
+use File::Spec::Functions qw/catfile/;
 
 require Zoidberg::Contractor;
 require Zoidberg::Shell;
@@ -99,7 +101,6 @@ our %_settings = ( # default settings
 		( $ENV{PAR_TEMP} ? "$ENV{PAR_TEMP}/inc/etc/zoidrc" : '/etc/zoidrc' ),
  		"$ENV{HOME}/.zoidrc",
 		"$ENV{HOME}/.zoid/zoidrc", 
-		dist_dir('Zoidberg') . '/zoidrc',
 	],
 	data_dirs => [
 		"$ENV{HOME}/.zoid",
@@ -290,7 +291,21 @@ sub new { # FIXME maybe rename this to init ?
 
 	## let's load the rcfiles
 	$$self{events}{loadrc} = sub {
-		$self->source(grep {-f $_} @{$$self{_settings}{rcfiles}});
+		#check for existant rcfiles in the known locations
+		my @rcfiles = grep {-f $_} @{$$self{_settings}{rcfiles}};
+		#if no zoidrc file is found, create one from the template in the dist_dir
+		unless (@rcfiles) {
+			my $rc_template = catfile(dist_dir('Zoidberg'), "zoidrc.example");
+			my $new_rc = catfile($ENV{HOME}, ".zoidrc");
+			error "No zoidrc file was found. A new zoidrc file will be created for you at $new_rc. If you really intend to use without a zoidrc file, simply create an empty zoidrc file in that location or at /etc/zoidrc.";
+			if( copy( $rc_template, $new_rc) ) {
+				push @rcfiles, $new_rc;
+			} else {
+				error "Could not copy $rc_template to $new_rc";
+			}
+			
+		}
+		$self->source(@rcfiles);
 	};
 	$self->broadcast('loadrc');
 
