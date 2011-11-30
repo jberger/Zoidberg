@@ -4,11 +4,6 @@ b/Requires.pl
 b/Strip.PL
 b/test.PL
 b/zoid.PL
-bindoc/zoid.pod
-bindoc/zoidbuiltins.pod
-bindoc/zoiddevel.pod
-bindoc/zoidfaq.pod
-bindoc/zoiduser.pod
 Build.PL
 Changes
 configure
@@ -33,6 +28,11 @@ lib/Zoidberg/Utils/Error.pm
 lib/Zoidberg/Utils/FileSystem.pm
 lib/Zoidberg/Utils/GetOpt.pm
 lib/Zoidberg/Utils/Output.pm
+man1/zoid.pod
+man1/zoidbuiltins.pod
+man1/zoiddevel.pod
+man1/zoidfaq.pod
+man1/zoiduser.pod
 MANIFEST			This list of files
 META.yml
 README
