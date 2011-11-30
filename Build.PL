@@ -1,19 +1,27 @@
 
-##  If you are looking for a listing of Dependencies please see b/Requires.pd  ##
-
 use lib './b';
 
 require ModuleBuildZoid;
 require File::Spec;
 
-my $requires = do File::Spec->catfile(qw/b Requires.pl/);
-$$requires{perl} = '5.6.1'; # I don't trust older versions will work
-
 my $build = ModuleBuildZoid->new(
 	module_name => 'Zoidberg',
 	dist_author => 'Jaap Karssenberg <pardus@cpan.org>',
 	license => 'perl',
-	requires => $requires,
+	requires => {
+		'File::Spec' => 0,
+		'Exporter::Tidy' => 0,
+		'Encode' => 0,
+		'POSIX' => 0,
+		'File::Glob' => 0,
+		'Data::Dumper' => 0,
+		'Env' => 0,
+		'AutoLoader' => 0,
+		'Cwd' => 0,
+		'File::ShareDir' => 0,
+		'Scalar::Util' => 0,
+		'perl' => '5.6.2',
+        },
 	recommends => {
 		'Term::ReadLine::Zoid' => 0,
 		'Env::PS1' => 0,
@@ -24,7 +32,6 @@ my $build = ModuleBuildZoid->new(
 		'Pod::Text' => 0,
 		'Test::More' => 0,
 	},
-#	create_makefile_pl => 'passthrough', # bug in M:B hacked Makefile.PL
 	dynamic_config => 1,
 	PL_files => {}, # make it ignore my own stuff in ./b/
 	autosplit => [
