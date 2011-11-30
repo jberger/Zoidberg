@@ -4,12 +4,13 @@ package Zoidberg::Utils::Error;
 our $VERSION = '0.96';
 
 use strict;
-use UNIVERSAL qw/isa can/;
 use Exporter::Tidy default => [qw/error bug todo/];
 use overload
 	'""' => \&stringify,
 	'eq' => sub { $_[0] },
 	fallback => 'TRUE';
+
+use Scalar::Util qw/reftype/;
 
 our $Scope = $0;
 $Scope =~ s#.*/##;
@@ -22,14 +23,19 @@ sub error {
 	my @caller = caller;
 	
 	if ($@ && !@_) { # make it work more like die
-		die $@->PROPAGATE(@caller[1,2]) if can $@, 'PROPAGATE';
+		my $error = $@;
+		my $can_propagate = do {
+			local $@;
+			eval{ $error->can( 'PROPAGATE') };
+		};
+		die $@->PROPAGATE(@caller[1,2]) if $can_propagate;
 		unshift @_, PROPAGATE({}, @caller[1,2]), $@;
 	}
 
 	my $error = bless {};
 
 	for (@_) { # compiling the error here
-		if (isa $_, 'HASH') { %$error = (%$error, %$_) }
+		if ( (reftype $_ || '') eq 'HASH') { %$error = (%$error, %$_) }
 		else { $$error{string} .= $_ }
 	}
 
