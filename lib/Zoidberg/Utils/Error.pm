@@ -10,6 +10,8 @@ use overload
 	'eq' => sub { $_[0] },
 	fallback => 'TRUE';
 
+use Scalar::Util qw/reftype/;
+
 our $Scope = $0;
 $Scope =~ s#.*/##;
 
@@ -33,7 +35,7 @@ sub error {
 	my $error = bless {};
 
 	for (@_) { # compiling the error here
-		if (ref $_ eq 'HASH') { %$error = (%$error, %$_) }
+		if ( (reftype $_ || '') eq 'HASH') { %$error = (%$error, %$_) }
 		else { $$error{string} .= $_ }
 	}
 
