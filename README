@@ -49,9 +49,14 @@ INSTALLATION
     > ./Build help action
 
   Zoidberg now uses the File::ShareDir architecture for keeping its shared
-  files. This allows for greater portability of the install process. '/etc/zoidrc'
-  '$HOME/.zoidrc', '/usr/local/share/zoid/' and '$HOME/.zoid/' will still be checked
-  for configuration files and plugins as before.
+  files. This allows for greater portability of the install process. 
+  Zoidberg will still search for zoidrc files at
+    '/etc/zoidrc',
+    '$HOME/.zoidrc'
+  and plugins in 
+    '/usr/share/zoid/',
+    '$HOME/.zoid/' 
+  as it did previously.
 
   If you need to add a directory to the include path -for example the install
   path where you installed the dependencies- use the PERL5LIB environment
