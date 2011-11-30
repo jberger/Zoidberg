@@ -6,7 +6,6 @@ b/test.PL
 b/zoid.PL
 Build.PL
 Changes
-configure
 ex/examples/cpan.pl
 ex/examples/Menu.pl
 ex/examples/word_expansion.pl
