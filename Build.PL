@@ -27,7 +27,7 @@ my $build = ModuleBuildZoid->new(
 		'Env::PS1' => 0,
 	},
 	build_requires => {
-		'Module::Build' => '0.24',
+		'Module::Build' => '0.28',
 		'Data::Dumper' => '0',
 		'Pod::Text' => 0,
 		'Test::More' => 0,
@@ -40,6 +40,16 @@ my $build = ModuleBuildZoid->new(
 		'lib/Zoidberg/Fish/Log.pm',
 	],
 	share_dir => 'share',
+	meta_merge => {
+		resources  => {
+			repository => "http://github.com/jberger/Zoidberg",
+		},
+		no_index => {
+			file => [ qw{
+				b/ModuleBuildZoid.pm
+			} ],
+		},
+	},
 );
 
 $build->MyInit;

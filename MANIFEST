@@ -1,6 +1,5 @@
 Artistic
 b/ModuleBuildZoid.pm
-b/Requires.pl
 b/Strip.PL
 b/test.PL
 b/zoid.PL
