@@ -43,7 +43,7 @@ share/plugins/CPAN.pm
 share/plugins/Intel.pl
 share/plugins/Log.pl
 share/plugins/ReadLine.pl
-share/zoidrc
+share/zoidrc.example
 t/00_use_ok.t
 t/30_dispatchtable.t
 t/31_ZoidbergError.t
