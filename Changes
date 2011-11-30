@@ -2,9 +2,12 @@
 ======================================================
 
 0.97 
-	- Dropped AppDir support
 	- Simplified install system
+		- Removed AppDir support
+		- Moved to File::ShareDir architecture
+		- Removed htmldocs build option (functionality exists elsewhere)
 	- Fixed failing tests on newer Perl versions
+	- Removed UNIVERSAL import (deprecated)
 
 0.96 Sat Feb 11 2006
 	- Added utf8 decoding for file names. Submitted by Wagner Frederic.
