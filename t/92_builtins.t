@@ -3,6 +3,8 @@ use strict;
 use Cwd qw/cwd/;
 use Zoidberg::Shell;
 
+use File::ShareDir qw/dist_dir/;
+
 $ENV{PWD} = cwd();
 
 print "1..13\n";
@@ -14,8 +16,8 @@ $|++;
 
 my $shell = Zoidberg::Shell->new(
 	settings => {
-		data_dirs => ['./blib/share'],
-		rcfiles   => ['./t/zoidrc'  ],
+		data_dirs => [ dist_dir('Zoidberg') ],
+		rcfiles   => [ './t/zoidrc' ],
 	}
 );
 
