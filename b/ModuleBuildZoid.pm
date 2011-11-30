@@ -17,6 +17,9 @@ sub MyInit {
 	# setup script
 	$self->script_files('script/zoid');
 
+	# setup man1 docs to be used
+	push @{$$self{properties}{bindoc_dirs}}, 'man1';
+
 	# setup handlers to be called
 	unshift @{$$self{properties}{build_elements}}, 'MyPre';
 	push @{$$self{properties}{build_elements}}, 'MyPost';
@@ -42,6 +45,15 @@ sub process_MyPost_files {
 	my $self = shift;
 	$self->run_perl_script( File::Spec->catfile('b', 'Strip.PL') )
 		if $self->{args}{strip};
+}
+
+# overloaded methods
+
+sub man1page_name { # added the s/\.pod$//
+	my $self = shift;
+	my $name =  File::Basename::basename( shift );
+	$name =~ s/\.pod$//;
+	return $name;
 }
 
 =head1 NAME

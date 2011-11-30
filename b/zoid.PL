@@ -36,7 +36,7 @@ my $usage_parser = Pod::Text->new();
 
 # Parse complete man page to temp file
 my ($pod, $tmp) = (
-	File::Spec->catfile(qw/bindoc zoid.pod/),
+	File::Spec->catfile(qw/man1 zoid.pod/),
 	File::Spec->catfile($b->blib, 'zoid.usage~~')
 );
 $usage_parser->parse_from_file($pod, $tmp);
