@@ -6,10 +6,9 @@ b/test.PL
 b/zoid.PL
 Build.PL
 Changes
-ex/examples/cpan.pl
-ex/examples/Menu.pl
-ex/examples/word_expansion.pl
-ex/index.html
+ex/cpan.pl
+ex/Menu.pl
+ex/word_expansion.pl
 lib/Bundle/Zoidberg.pm
 lib/Zoidberg.pm
 lib/Zoidberg/Contractor.pm
