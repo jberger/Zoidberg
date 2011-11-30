@@ -37,7 +37,6 @@ MANIFEST			This list of files
 META.yml
 README
 script/fluff
-share/AppInfo.xml
 share/pixmaps/zoid16.png
 share/pixmaps/zoid32.png
 share/pixmaps/zoid64.png
