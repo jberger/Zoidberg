@@ -11,9 +11,6 @@ our @ISA = qw/Module::Build/;
 sub MyInit {
 	my $self = shift;
 
-	# setup cleaner
-	$self->add_to_cleanup(qw#Makefile Zoidberg/ script/zoid#);
-
 	# setup script
 	$self->script_files('script/zoid');
 
@@ -33,7 +30,6 @@ sub process_MyPre_files {
 	my $blib = $self->blib;
 	my ($zoidPL, $testPL) = map {File::Spec->catfile(@$_)} (['b','zoid.PL'], ['b','test.PL']);
 
-	$self->run_perl_script($zoidPL); # not using up2date due to dynamic config
 	$self->run_perl_script($testPL);
 
 	$self->copy_if_modified( from => $_, to => File::Spec->catfile($blib, 'doc', $_) )
