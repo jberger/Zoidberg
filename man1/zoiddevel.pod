@@ -675,5 +675,5 @@ by a command to inspect its arguments as they were before path expansions etc..
 
 =head1 SEE ALSO
 
-L<perl>(1), L<http://zoidberg.sourceforge.net>
+L<perl>(1), L<http://github.com/jberger/Zoidberg>
 

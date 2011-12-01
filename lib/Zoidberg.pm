@@ -11,7 +11,7 @@ This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-http://zoidberg.sourceforge.net";
+http://github.com/jberger/Zoidberg";
 
 use strict;
 use vars qw/$AUTOLOAD/;
@@ -1366,6 +1366,6 @@ and L<http://www.gnu.org/copyleft/gpl.html>
 
 L<zoid>(1), L<zoiddevel>(1),
 L<Zoidberg::Shell>,
-L<http://zoidberg.sourceforge.net>
+L<http://github.com/jberger/Zoidberg>
 
 =cut

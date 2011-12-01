@@ -378,5 +378,5 @@ TODO what should happen with contexts other then CMD ?
 
 =head1 SEE ALSO
 
-L<zoiduser>(1), L<perl>(1), L<http://zoidberg.sourceforge.net>
+L<zoiduser>(1), L<perl>(1), L<http://github.com/jberger/Zoidberg>
 

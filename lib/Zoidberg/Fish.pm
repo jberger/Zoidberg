@@ -283,6 +283,6 @@ modify it under the same terms as Perl itself.
 L<Zoidberg>,
 L<Zoidberg::Shell>,
 L<Zoidberg::Utils>,
-L<http://zoidberg.sourceforge.net>
+L<http://github.com/jberger/Zoidberg>
 
 =cut

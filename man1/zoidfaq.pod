@@ -151,4 +151,4 @@ kind of message it probably is a bug in zoid, please report it.
 
 =head1 SEE ALSO
 
-L<perl(1)>, L<http://zoidberg.sourceforge.net>
+L<perl(1)>, L<http://github.com/jberger/Zoidberg>

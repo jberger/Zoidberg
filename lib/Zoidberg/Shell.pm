@@ -421,7 +421,7 @@ modify it under the same terms as Perl itself.
 =head1 SEE ALSO
 
 L<Zoidberg>, L<Zoidberg::Utils>,
-L<http://zoidberg.sourceforge.net>
+L<http://github.com/jberger/Zoidberg>
 
 L<Shell>
 

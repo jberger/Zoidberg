@@ -10,7 +10,7 @@
 # the Zoidberg perl shell.                                       #
 #                                                                #
 # mailto:pardus@cpan.org                                         #
-# http://zoidberg.sourceforge.net                                #
+# http://github.com/jberger/Zoidberg                             #
 # ############################################################## #
 
 use strict;
@@ -394,7 +394,7 @@ L<zoidbuiltins>(1),
 L<zoiddevel>(1),
 L<zoidfaq>(1),
 L<Zoidberg>(3),
-L<http://zoidberg.sourceforge.net>
+L<http://github.com/jberger/Zoidberg>
 
 =head1 AUTHORS
 

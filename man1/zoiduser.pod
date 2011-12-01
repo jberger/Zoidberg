@@ -421,5 +421,5 @@ The runtime search path for plugins etc. can be controlled with the
 =head1 SEE ALSO
 
 L<zoidbuiltins>(1), L<zoiddevel>(1), L<zoidfaq>(1), L<perl>(1), 
-L<http://zoidberg.sourceforge.net>
+L<http://github.com/jberger/Zoidberg>
 
