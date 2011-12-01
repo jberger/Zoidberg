@@ -20,6 +20,7 @@ my $build = ModuleBuildZoid->new(
 		'Cwd' => 0,
 		'File::ShareDir' => 0,
 		'Scalar::Util' => 0,
+		'Pod::Usage' => 0,
 		'perl' => '5.6.2',
         },
 	recommends => {
