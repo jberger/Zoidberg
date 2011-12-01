@@ -1,7 +1,7 @@
 {
    "abstract" : "A modular perl shell",
    "author" : [
-      "Jaap Karssenberg <pardus@cpan.org>"
+      "Joel Berger <joel.a.berger@gmail.com>"
    ],
    "dynamic_config" : 1,
    "generated_by" : "Module::Build version 0.3901, CPAN::Meta::Converter version 2.112621",
@@ -52,6 +52,100 @@
             "Scalar::Util" : 0,
             "perl" : "v5.6.2"
          }
+      }
+   },
+   "provides" : {
+      "Bundle::Zoidberg" : {
+         "file" : "lib/Bundle/Zoidberg.pm",
+         "version" : "0.1"
+      },
+      "Zoidberg" : {
+         "file" : "lib/Zoidberg.pm",
+         "version" : "0.97"
+      },
+      "Zoidberg::Contractor" : {
+         "file" : "lib/Zoidberg/Contractor.pm",
+         "version" : "0.97"
+      },
+      "Zoidberg::DispatchTable" : {
+         "file" : "lib/Zoidberg/DispatchTable.pm",
+         "version" : "0.97"
+      },
+      "Zoidberg::Eval" : {
+         "file" : "lib/Zoidberg.pm",
+         "version" : 0
+      },
+      "Zoidberg::Fish" : {
+         "file" : "lib/Zoidberg/Fish.pm",
+         "version" : "0.97"
+      },
+      "Zoidberg::Fish::Commands" : {
+         "file" : "lib/Zoidberg/Fish/Commands.pm",
+         "version" : "0.97"
+      },
+      "Zoidberg::Fish::Intel" : {
+         "file" : "lib/Zoidberg/Fish/Intel.pm",
+         "version" : "0.97"
+      },
+      "Zoidberg::Fish::Log" : {
+         "file" : "lib/Zoidberg/Fish/Log.pm",
+         "version" : "0.97"
+      },
+      "Zoidberg::Fish::ReadLine" : {
+         "file" : "lib/Zoidberg/Fish/ReadLine.pm",
+         "version" : "0.97"
+      },
+      "Zoidberg::Job" : {
+         "file" : "lib/Zoidberg/Contractor.pm",
+         "version" : 0
+      },
+      "Zoidberg::Job::builtin" : {
+         "file" : "lib/Zoidberg/Contractor.pm",
+         "version" : 0
+      },
+      "Zoidberg::PluginHash" : {
+         "file" : "lib/Zoidberg/PluginHash.pm",
+         "version" : "0.97"
+      },
+      "Zoidberg::SettingsHash" : {
+         "file" : "lib/Zoidberg.pm",
+         "version" : 0
+      },
+      "Zoidberg::Shell" : {
+         "file" : "lib/Zoidberg/Shell.pm",
+         "version" : "0.97"
+      },
+      "Zoidberg::Shell::JobsArray" : {
+         "file" : "lib/Zoidberg/Shell.pm",
+         "version" : 0
+      },
+      "Zoidberg::StringParser" : {
+         "file" : "lib/Zoidberg/StringParser.pm",
+         "version" : "0.97"
+      },
+      "Zoidberg::Utils" : {
+         "file" : "lib/Zoidberg/Utils.pm",
+         "version" : "0.97"
+      },
+      "Zoidberg::Utils::Error" : {
+         "file" : "lib/Zoidberg/Utils/Error.pm",
+         "version" : "0.97"
+      },
+      "Zoidberg::Utils::FileSystem" : {
+         "file" : "lib/Zoidberg/Utils/FileSystem.pm",
+         "version" : "0.97"
+      },
+      "Zoidberg::Utils::GetOpt" : {
+         "file" : "lib/Zoidberg/Utils/GetOpt.pm",
+         "version" : "0.97"
+      },
+      "Zoidberg::Utils::Output" : {
+         "file" : "lib/Zoidberg/Utils/Output.pm",
+         "version" : "0.97"
+      },
+      "Zoidberg::Utils::Output::Scalar" : {
+         "file" : "lib/Zoidberg/Utils/Output.pm",
+         "version" : 0
       }
    },
    "release_status" : "stable",
