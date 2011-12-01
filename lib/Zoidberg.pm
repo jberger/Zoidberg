@@ -297,11 +297,11 @@ sub new { # FIXME maybe rename this to init ?
 		unless (@rcfiles) {
 			my $rc_template = catfile(dist_dir('Zoidberg'), "zoidrc.example");
 			my $new_rc = catfile($ENV{HOME}, ".zoidrc");
-			warn "No zoidrc file was found. A new zoidrc file will be created for you at $new_rc. If you really intend to use without a zoidrc file, simply create an empty zoidrc file in that location or at /etc/zoidrc\n";
+			warn "### No zoidrc file was found. A new zoidrc file will be created for you at $new_rc. If you really intend to use without a zoidrc file, simply create an empty zoidrc file in that location or at /etc/zoidrc\n\n";
 			if( copy( $rc_template, $new_rc) ) {
 				push @rcfiles, $new_rc;
 			} else {
-				warn "Could not copy $rc_template to $new_rc\n";
+				warn "### Could not copy $rc_template to $new_rc\n\n";
 			}
 			
 		}
