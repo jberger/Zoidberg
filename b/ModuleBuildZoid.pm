@@ -11,9 +11,6 @@ our @ISA = qw/Module::Build/;
 sub MyInit {
 	my $self = shift;
 
-	# setup script
-	$self->script_files('script/zoid');
-
 	# setup man1 docs to be used
 	push @{$$self{properties}{bindoc_dirs}}, 'man1';
 
@@ -28,7 +25,7 @@ sub process_MyPre_files {
 	my $self = shift;
 
 	my $blib = $self->blib;
-	my ($zoidPL, $testPL) = map {File::Spec->catfile(@$_)} (['b','zoid.PL'], ['b','test.PL']);
+	my $testPL = File::Spec->catfile('b','test.PL');
 
 	$self->run_perl_script($testPL);
 

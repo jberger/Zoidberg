@@ -2,6 +2,7 @@ Artistic
 b/ModuleBuildZoid.pm
 b/Strip.PL
 b/test.PL
+bin/zoid
 Build.PL
 Changes
 ex/cpan.pl
@@ -31,7 +32,6 @@ man1/zoiduser.pod
 MANIFEST			This list of files
 META.yml
 README
-script/zoid
 share/pixmaps/zoid16.png
 share/pixmaps/zoid32.png
 share/pixmaps/zoid64.png
