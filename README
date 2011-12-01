@@ -55,6 +55,7 @@ INSTALLATION
     '$HOME/.zoidrc'
   and plugins in 
     '/usr/share/zoid/',
+    '/usr/local/share/zoid/',
     '$HOME/.zoid/' 
   as it did previously.
 

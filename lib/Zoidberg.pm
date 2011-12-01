@@ -104,7 +104,7 @@ our %_settings = ( # default settings
 	],
 	data_dirs => [
 		"$ENV{HOME}/.zoid",
-		( $ENV{PAR_TEMP} ? "$ENV{PAR_TEMP}/inc/share" : '.$data.' ),
+		( $ENV{PAR_TEMP} ? "$ENV{PAR_TEMP}/inc/share" : ( qw# /usr/local/share/zoid /usr/share/zoid # ) ),
 		dist_dir('Zoidberg'),
 	],
 );
