@@ -1351,6 +1351,8 @@ or a shell command, in which case Zoidberg tries to execute it.
 
 =head1 AUTHOR
 
+Joel Berger, E<lt>joel.a.berger@gmail.comE<gt>
+
 Jaap Karssenberg || Pardus [Larus] E<lt>pardus@cpan.orgE<gt>
 
 R.L. Zwart, E<lt>carl0s@users.sourceforge.netE<gt>

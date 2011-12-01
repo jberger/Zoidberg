@@ -6,7 +6,7 @@ require File::Spec;
 
 my $build = ModuleBuildZoid->new(
 	module_name => 'Zoidberg',
-	dist_author => 'Jaap Karssenberg <pardus@cpan.org>',
+	dist_author => 'Joel Berger <joel.a.berger@gmail.com>',
 	license => 'perl',
 	requires => {
 		'File::Spec' => 0,
