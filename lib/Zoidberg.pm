@@ -3,7 +3,7 @@ package Zoidberg;
 our $VERSION = '0.97';
 our $LONG_VERSION = "Zoidberg $VERSION
 
-Copyright (c) 2002 - 2004 Jaap G Karssenberg. All rights reserved.
+Copyright (c) 2011 Jaap G Karssenberg and Joel Berger. All rights reserved.
 This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl.
 
@@ -1355,7 +1355,7 @@ Jaap Karssenberg || Pardus [Larus] E<lt>pardus@cpan.orgE<gt>
 
 R.L. Zwart, E<lt>carl0s@users.sourceforge.netE<gt>
 
-Copyright (c) 2002 Jaap G Karssenberg. All rights reserved.
+Copyright (c) 2011 Jaap G Karssenberg and Joel Berger. All rights reserved.
 This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself.
 

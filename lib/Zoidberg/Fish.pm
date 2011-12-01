@@ -274,7 +274,7 @@ R.L. Zwart, E<lt>rlzwart@cpan.orgE<gt>
 
 Jaap Karssenberg || Pardus [Larus] E<lt>pardus@cpan.orgE<gt>
 
-Copyright (c) 2002 Raoul L. Zwart. All rights reserved.
+Copyright (c) 2011 Raoul L. Zwart and Joel Berger. All rights reserved.
 This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself.
 

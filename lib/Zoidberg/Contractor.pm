@@ -968,10 +968,9 @@ Jaap Karssenberg, E<lt>pardus@cpan.orgE<gt>
 
 Raoul Zwart, E<lt>rlzwart@cpan.orgE<gt>
 
-Copyright 2003 by Jaap Karssenberg
-
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
+Copyright (c) 2011 Jaap G Karssenberg and Joel Berger. All rights reserved.
+This program is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself.
 
 =head1 SEE ALSO
 
