@@ -1,7 +1,7 @@
 
 package Zoidberg::Utils::Error;
 
-our $VERSION = '0.96';
+our $VERSION = '0.97';
 
 use strict;
 use Exporter::Tidy default => [qw/error bug todo/];

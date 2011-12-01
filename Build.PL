@@ -27,6 +27,9 @@ my $build = ModuleBuildZoid->new(
 		'Term::ReadLine::Zoid' => 0,
 		'Env::PS1' => 0,
 	},
+	configure_requires => {
+		'Module::Build' => '0.28',
+	},
 	build_requires => {
 		'Module::Build' => '0.28',
 		'Data::Dumper' => '0',

@@ -30,6 +30,7 @@ man1/zoiddevel.pod
 man1/zoidfaq.pod
 man1/zoiduser.pod
 MANIFEST			This list of files
+META.json
 META.yml
 README
 share/pixmaps/zoid16.png

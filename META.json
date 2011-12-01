@@ -1,0 +1,67 @@
+{
+   "abstract" : "A modular perl shell",
+   "author" : [
+      "Jaap Karssenberg <pardus@cpan.org>"
+   ],
+   "dynamic_config" : 1,
+   "generated_by" : "Module::Build version 0.3901, CPAN::Meta::Converter version 2.112621",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Zoidberg",
+   "no_index" : {
+      "file" : [
+         "b/ModuleBuildZoid.pm"
+      ]
+   },
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "Data::Dumper" : 0,
+            "Module::Build" : "0.28",
+            "Pod::Text" : 0,
+            "Test::More" : 0
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "Module::Build" : "0.28"
+         }
+      },
+      "runtime" : {
+         "recommends" : {
+            "Env::PS1" : 0,
+            "Term::ReadLine::Zoid" : 0
+         },
+         "requires" : {
+            "AutoLoader" : 0,
+            "Cwd" : 0,
+            "Data::Dumper" : 0,
+            "Encode" : 0,
+            "Env" : 0,
+            "Exporter::Tidy" : 0,
+            "File::Glob" : 0,
+            "File::ShareDir" : "1.00",
+            "File::Spec" : 0,
+            "POSIX" : 0,
+            "Pod::Usage" : 0,
+            "Scalar::Util" : 0,
+            "perl" : "v5.6.2"
+         }
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "license" : [
+         "http://dev.perl.org/licenses/"
+      ],
+      "repository" : {
+         "url" : "http://github.com/jberger/Zoidberg"
+      }
+   },
+   "version" : "0.97"
+}

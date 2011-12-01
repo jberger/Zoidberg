@@ -1,6 +1,6 @@
 package Zoidberg;
 
-our $VERSION = '0.96';
+our $VERSION = '0.97';
 our $LONG_VERSION = "Zoidberg $VERSION
 
 Copyright (c) 2002 - 2004 Jaap G Karssenberg. All rights reserved.
