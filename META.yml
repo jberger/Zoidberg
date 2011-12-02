@@ -10,7 +10,7 @@ build_requires:
 configure_requires:
   Module::Build: 0.28
 dynamic_config: 1
-generated_by: 'Module::Build version 0.3901, CPAN::Meta::Converter version 2.112621'
+generated_by: 'Module::Build version 0.38, CPAN::Meta::Converter version 2.110440'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -93,7 +93,6 @@ recommends:
   Env::PS1: 0
   Term::ReadLine::Zoid: 0
 requires:
-  AutoLoader: 0
   Cwd: 0
   Data::Dumper: 0
   Encode: 0
@@ -106,6 +105,7 @@ requires:
   Pod::Usage: 0
   Scalar::Util: 0
   perl: v5.6.2
+  version: 0.77
 resources:
   license: http://dev.perl.org/licenses/
   repository: http://github.com/jberger/Zoidberg

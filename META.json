@@ -4,7 +4,7 @@
       "Joel Berger <joel.a.berger@gmail.com>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.3901, CPAN::Meta::Converter version 2.112621",
+   "generated_by" : "Module::Build version 0.38, CPAN::Meta::Converter version 2.110440",
    "license" : [
       "perl_5"
    ],
@@ -38,7 +38,6 @@
             "Term::ReadLine::Zoid" : 0
          },
          "requires" : {
-            "AutoLoader" : 0,
             "Cwd" : 0,
             "Data::Dumper" : 0,
             "Encode" : 0,
@@ -50,7 +49,8 @@
             "POSIX" : 0,
             "Pod::Usage" : 0,
             "Scalar::Util" : 0,
-            "perl" : "v5.6.2"
+            "perl" : "v5.6.2",
+            "version" : "0.77"
          }
       }
    },
