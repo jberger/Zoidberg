@@ -14,24 +14,38 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 http://github.com/jberger/Zoidberg";
 
 use strict;
-use vars qw/$AUTOLOAD/;
+use vars qw/$AUTOLOAD $_feature_version/;
 no warnings; # yes, undefined == '' == 0
+
+use version 0.77;
 
 our @_feature_keywords;
 BEGIN {
   { # block to last out of if less than v5.10.0
     last if ($^V < v5.10.0);
+    last unless $_feature_version;
+    
+    if ($_feature_version eq '1') {
+      $_feature_version = $^V;
+    } else {
+      $_feature_version =~ s/5\.(\d{2})/5.0$1/;
+      $_feature_version = eval { version->parse($_feature_version) };
+      if ($@) {
+        print STDERR "Could not understand feature version: Ignoring\n";
+        last;
+      }
+    }
 
     require feature;
 
     my $import_version = ':5.10';
     push @_feature_keywords, qw'say state given when default';
 
-    if ( $^V >= v5.12.0 ) {
+    if ( $_feature_version >= v5.12.0 ) {
       $import_version = ':5.12'; 
     }
 
-    if ( $^V >= v5.14.0 ) {
+    if ( $_feature_version >= v5.14.0 ) {
       $import_version = ':5.14'; # s///r
     }
 
