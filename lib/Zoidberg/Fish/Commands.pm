@@ -183,7 +183,7 @@ sub export { # TODO if arg == 1 and not hash then export var from zoid::eval to 
 				$ENV{$_} = join ':', @env if @env;
 			}
 			else { # scalars
-				$env = defined($$vals{$_})        ? $$vals{$_}        :
+				my $env = defined($$vals{$_})        ? $$vals{$_}        :
 		        	       defined(${$class.'::'.$_}) ? ${$class.'::'.$_} : undef ;
 				$ENV{$_} = $env if defined $env;
 			}
