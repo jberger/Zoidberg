@@ -17,14 +17,27 @@ use strict;
 use vars qw/$AUTOLOAD/;
 no warnings; # yes, undefined == '' == 0
 
-use feature ();
-our @_features;
-#use if ($^V gt v5.10.0), feature => ':5.10';
+our @_feature_keywords;
 BEGIN {
+  last unless eval { require feature };
+  my $import_version;
+
   if ( $^V gt v5.10.0 ) { 
-    feature->import(':5.10');
-    push @_features, qw'say state given when default';
-    print "Additional Perl features '@_features' added as keywords.\n";
+    $import_version = ':5.10';
+    push @_feature_keywords, qw'say state given when default';
+  }
+
+  if ( $^V gt v5.12.0 ) {
+    $import_version = ':5.12'; 
+  }
+
+  if ( $^V gt v5.14.0 ) {
+    $import_version = ':5.14'; # s///r
+  }
+
+  if ($import_version) {
+    feature->import($import_version);
+    print STDERR "Additional Perl features '$import_version' loaded, '@_feature_keywords' added as keywords.\n";
   }
 }
 
@@ -99,7 +112,7 @@ our %_settings = ( # default settings
 			tie untie
 			my our use no sub package
 			import bless
-		/, @_features],
+		/, @_feature_keywords],
 		namespace => 'Zoidberg::Eval',
 		opts => 'Z',
 	},
