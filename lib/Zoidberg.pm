@@ -24,12 +24,8 @@ BEGIN {
 
     require feature;
 
-    my $import_version;
-
-    if ( $^V >= v5.10.0 ) { 
-      $import_version = ':5.10';
-      push @_feature_keywords, qw'say state given when default';
-    }
+    my $import_version = ':5.10';
+    push @_feature_keywords, qw'say state given when default';
 
     if ( $^V >= v5.12.0 ) {
       $import_version = ':5.12'; 
@@ -39,10 +35,9 @@ BEGIN {
       $import_version = ':5.14'; # s///r
     }
 
-    if ($import_version) {
-      feature->import($import_version);
-      print STDERR "Additional Perl features '$import_version' loaded, '@_feature_keywords' added as keywords.\n";
-    }
+    feature->import($import_version);
+    print STDERR "Additional Perl features '$import_version' loaded, '@_feature_keywords' added as keywords.\n";
+
   }
 }
 
