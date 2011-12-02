@@ -8,6 +8,7 @@
 		- Removed htmldocs build option (functionality exists elsewhere)
 	- Fixed failing tests on newer Perl versions
 	- Removed UNIVERSAL import (deprecated)
+	- zoid now respects `/usr/bin/env perl` for perlbrew's sake
 
 0.96 Sat Feb 11 2006
 	- Added utf8 decoding for file names. Submitted by Wagner Frederic.
