@@ -3,7 +3,7 @@ package Zoidberg::Fish::Commands;
 our $VERSION = '0.97';
 
 use strict;
-use AutoLoader 'AUTOLOAD';
+#use AutoLoader 'AUTOLOAD';
 use Cwd;
 use Env qw/@CDPATH @DIRSTACK/;
 use base 'Zoidberg::Fish';
@@ -114,9 +114,9 @@ sub cd { # TODO [-L|-P] see man 1 bash
 	}
 }
 
-1;
+#1;
 
-__END__
+#__END__
 
 =item exec I<cmd>
 
@@ -871,3 +871,6 @@ modify it under the same terms as Perl itself.
 L<Zoidberg>, L<Zoidberg::Fish>
 
 =cut
+
+1;
+

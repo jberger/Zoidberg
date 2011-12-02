@@ -3,7 +3,7 @@ package Zoidberg::Fish::Log;
 our $VERSION = '0.97';
 
 use strict;
-use AutoLoader 'AUTOLOAD';
+#use AutoLoader 'AUTOLOAD';
 use Zoidberg::Utils qw/:default path getopt output_is_captured/;
 use base 'Zoidberg::Fish';
 
@@ -202,9 +202,9 @@ sub round_up {
 	close OUT;
 }
 
-1;
+#1;
 
-__END__
+#__END__
 
 =head1 NAME
 
@@ -389,4 +389,6 @@ modify it under the same terms as Perl itself.
 L<Zoidberg>
 
 =cut
+
+1;
 

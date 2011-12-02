@@ -4,7 +4,7 @@ our $VERSION = '0.97';
 
 use strict;
 use vars qw/$DEVNULL/;
-use AutoLoader 'AUTOLOAD';
+#use AutoLoader 'AUTOLOAD';
 use Zoidberg::Fish;
 use Zoidberg::Utils qw/:default path list_path list_dir/;
 
@@ -290,9 +290,9 @@ sub i_dirs_n_files { # types can be x, f, ans/or d # TODO globbing tab :)
 sub i_perl { return ($_[1], qw/_zoid env_vars dirs_n_files/) }
 # FIXME how bout completing commands as subs ?
 
-1;
+#1;
 
-__END__
+#__END__
 
 sub i__zoid {
 	my ($self, $block) = @_;
@@ -491,4 +491,6 @@ modify it under the same terms as Perl itself.
 L<Zoidberg>, L<Zoidberg::Fish>,
 
 =cut
+
+1;
 
