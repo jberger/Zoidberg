@@ -17,7 +17,16 @@ use strict;
 use vars qw/$AUTOLOAD/;
 no warnings; # yes, undefined == '' == 0
 
-use 5.10.0;
+use feature ();
+our @_features;
+#use if ($^V gt v5.10.0), feature => ':5.10';
+BEGIN {
+  if ( $^V gt v5.10.0 ) { 
+    feature->import(':5.10');
+    push @_features, qw'say state given when default';
+    print "Additional Perl features '@_features' added as keywords.\n";
+  }
+}
 
 require Cwd;
 require File::Glob;
@@ -83,15 +92,14 @@ our %_settings = ( # default settings
 	perl => {
 		keywords => [qw/
 			if unless for foreach while until 
-			print say
+			print
 			push shift unshift pop splice
 			delete
 			do eval
 			tie untie
-			my our use no sub package state
+			my our use no sub package
 			import bless
-			given when default
-		/],
+		/, @_features],
 		namespace => 'Zoidberg::Eval',
 		opts => 'Z',
 	},
