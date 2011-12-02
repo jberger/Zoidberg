@@ -41,6 +41,7 @@ eval q#use Zoidberg::Utils::GetOpt 'getopt'; 1# or die $@;
 
 my ($opts, $args) = eval { getopt( '
 	help,h,usage,u version,V config,C
+	feature,f$
 	exec,e@ command,c@ stdin,s
 	interactive,i login,l plug,p@
 	debug,-D,D verbose,v include,-I@
@@ -108,6 +109,9 @@ else { $ENV{PWD} = $cwd }
 unshift @INC,
 	map {m!^/! ? $_ : "$cwd/$_" }
 	grep s/^-I//, @{ $$opts{_opts} } if $$opts{_opts};
+
+# prepare feature import
+$Zoidberg::_feature_version = defined $opts->{feature} ? $opts->{feature} : 1;
 
 # load Zoidberg.pm
 eval q#require Zoidberg# or die $@;
