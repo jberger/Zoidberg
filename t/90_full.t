@@ -15,7 +15,7 @@ $ENV{ARRAY} = join ':', qw/f00 ok b4r/;
 $SIG{PIPE} = 'IGNORE';
 
 $|++;
-my $zoid = "| $^X script/zoid -o data_dirs=share -o rcfiles=../t/zoidrc";
+my $zoid = "| $^X script/zoid -f 0 -o data_dirs=share -o rcfiles=../t/zoidrc";
 
 open ZOID, $zoid;
 
