@@ -19,25 +19,30 @@ no warnings; # yes, undefined == '' == 0
 
 our @_feature_keywords;
 BEGIN {
-  last unless eval { require feature };
-  my $import_version;
+  { # block to last out of if less than v5.10.0
+    last if ($^V < v5.10.0);
 
-  if ( $^V gt v5.10.0 ) { 
-    $import_version = ':5.10';
-    push @_feature_keywords, qw'say state given when default';
-  }
+    require feature;
 
-  if ( $^V gt v5.12.0 ) {
-    $import_version = ':5.12'; 
-  }
+    my $import_version;
 
-  if ( $^V gt v5.14.0 ) {
-    $import_version = ':5.14'; # s///r
-  }
+    if ( $^V >= v5.10.0 ) { 
+      $import_version = ':5.10';
+      push @_feature_keywords, qw'say state given when default';
+    }
 
-  if ($import_version) {
-    feature->import($import_version);
-    print STDERR "Additional Perl features '$import_version' loaded, '@_feature_keywords' added as keywords.\n";
+    if ( $^V >= v5.12.0 ) {
+      $import_version = ':5.12'; 
+    }
+
+    if ( $^V >= v5.14.0 ) {
+      $import_version = ':5.14'; # s///r
+    }
+
+    if ($import_version) {
+      feature->import($import_version);
+      print STDERR "Additional Perl features '$import_version' loaded, '@_feature_keywords' added as keywords.\n";
+    }
   }
 }
 
