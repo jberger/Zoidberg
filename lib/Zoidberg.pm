@@ -55,7 +55,7 @@ BEGIN {
     }
 
     feature->import($import_version);
-    print STDERR "Additional Perl features '$import_version' loaded, '@_feature_keywords' added as keywords.\n";
+    print STDERR "Additional Perl features '$import_version' loaded\n\t'@_feature_keywords' added as keywords.\n";
 
   }
 }
