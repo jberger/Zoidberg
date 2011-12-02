@@ -17,6 +17,8 @@ use strict;
 use vars qw/$AUTOLOAD/;
 no warnings; # yes, undefined == '' == 0
 
+use 5.10.0;
+
 require Cwd;
 require File::Glob;
 use File::ShareDir qw/dist_dir/;
@@ -81,13 +83,14 @@ our %_settings = ( # default settings
 	perl => {
 		keywords => [qw/
 			if unless for foreach while until 
-			print
+			print say
 			push shift unshift pop splice
 			delete
 			do eval
 			tie untie
-			my our use no sub package
+			my our use no sub package state
 			import bless
+			given when default
 		/],
 		namespace => 'Zoidberg::Eval',
 		opts => 'Z',
