@@ -19,16 +19,21 @@ no warnings; # yes, undefined == '' == 0
 
 use version 0.77;
 
+# feature loading needs to happen at compile time, and as soon as possible.
+# set $Zoidberg::_feature_version to 0 or undef to skip (default), 
+#   1 to use $^V or to something like a version number to use that (if possible)
 our @_feature_keywords;
 BEGIN {
   { # block to last out of if less than v5.10.0
     last if ($^V < v5.10.0);
-    last unless $_feature_version;
+    last unless $_feature_version; # 0 or undef skips (default)
     
     if ($_feature_version eq '1') {
       $_feature_version = $^V;
     } else {
-      $_feature_version =~ s/5\.(\d{2})/5.0$1/;
+      #5.10 -> 5.010 which is parsable by version->parse
+      $_feature_version =~ s/5\.(\d{2})/5.0$1/; 
+      
       $_feature_version = eval { version->parse($_feature_version) };
       if ($@) {
         print STDERR "Could not understand feature version: Ignoring\n";
@@ -39,7 +44,7 @@ BEGIN {
     require feature;
 
     my $import_version = ':5.10';
-    push @_feature_keywords, qw'say state given when default';
+    push @_feature_keywords, qw'say state given';
 
     if ( $_feature_version >= v5.12.0 ) {
       $import_version = ':5.12'; 
