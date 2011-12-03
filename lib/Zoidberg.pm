@@ -24,7 +24,7 @@ use version 0.77;
 #   1 to use $^V or to something like a version number to use that (if possible)
 our @_feature_keywords;
 BEGIN {
-  { # block to last out of if less than v5.10.0
+  { # block for last-ing out
     last if ($^V < v5.10.0);
     last unless $_feature_version; # 0 or undef skips (default)
     
@@ -32,7 +32,7 @@ BEGIN {
       $_feature_version = $^V;
     } else {
       #5.10 -> 5.010 which is parsable by version->parse
-      $_feature_version =~ s/5\.(\d{2})/5.0$1/; 
+      $_feature_version =~ s/5\.(\d+)/sprintf("5.%03d",$1)/e; 
       
       $_feature_version = eval { version->parse($_feature_version) };
       if ($@) {
@@ -40,6 +40,8 @@ BEGIN {
         last;
       }
     }
+    
+    last if ($_feature_version < v5.10.0);
 
     require feature;
 
