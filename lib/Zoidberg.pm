@@ -15,7 +15,8 @@ http://github.com/jberger/Zoidberg";
 
 use strict;
 use vars qw/$AUTOLOAD/;
-no warnings; # yes, undefined == '' == 0
+use warnings;
+no warnings 'uninitialized'; # yes, undefined == '' == 0
 
 require Cwd;
 require File::Glob;
@@ -806,27 +807,29 @@ sub expand_param {
 	
 	my $class = $$self{_settings}{perl}{namespace};
 	@words = map { # substitute vars
-		next if /^([\/\w]+=)?'.*'$/s; # skip quoted words
-		my $old = $_;
-		s{(?<!\\)\$\?}{ ref($$self{error}) ? $$self{error}{exit_status} : $$self{error} ? 1 : 0 }ge;
-		s{ (?<!\\) \$ (?: \{ (.*?) \} | ([\w-]+) ) (?: \[(-?\d+)\] )? }{
-			my ($w, $i) = ($1 || $2, $3);
-			$e ||= "no advanced expansion for \$\{$w\}" if $w =~ /[^\w-]/;
-			if ($w eq '_') { $w = $$self{topic} }
-			elsif (exists $$meta{env}{$w} or exists $ENV{$w}) {
-				$w = exists( $$meta{env}{$w} ) ? $$meta{env}{$w} : $ENV{$w} ;
-				$w = $i ? (split /:/, $w)[$i] : $w;
-			}
-			elsif ($i ? defined(*{$class.'::'.$w}{ARRAY}) : defined(*{$class.'::'.$w}{SCALAR})) {
-				$w = $i ? ${$class.'::'.$w}[$i] : ${$class.'::'.$w};
-			}
-			else { $w = '' }
-			$w =~ s/\\/\\\\/g; # literal backslashes
-			$w;
-		}exg;
-		if ($_ eq $old or $_ =~ /^".*"$/) { $_ }
-		else { $$self{stringparser}->split('word_gram', $_) }
-		# TODO honour IFS here -- POSIX tells us so
+		if (/^([\/\w]+=)?'.*'$/s) { $_ }# skip quoted words
+		else {
+			my $old = $_;
+			s{(?<!\\)\$\?}{ ref($$self{error}) ? $$self{error}{exit_status} : $$self{error} ? 1 : 0 }ge;
+			s{ (?<!\\) \$ (?: \{ (.*?) \} | ([\w-]+) ) (?: \[(-?\d+)\] )? }{
+				my ($w, $i) = ($1 || $2, $3);
+				$e ||= "no advanced expansion for \$\{$w\}" if $w =~ /[^\w-]/;
+				if ($w eq '_') { $w = $$self{topic} }
+				elsif (exists $$meta{env}{$w} or exists $ENV{$w}) {
+					$w = exists( $$meta{env}{$w} ) ? $$meta{env}{$w} : $ENV{$w} ;
+					$w = $i ? (split /:/, $w)[$i] : $w;
+				}
+				elsif ($i ? defined(*{$class.'::'.$w}{ARRAY}) : defined(*{$class.'::'.$w}{SCALAR})) {
+					$w = $i ? ${$class.'::'.$w}[$i] : ${$class.'::'.$w};
+				}
+				else { $w = '' }
+				$w =~ s/\\/\\\\/g; # literal backslashes
+				$w;
+			}exg;
+			if ($_ eq $old or $_ =~ /^".*"$/) { $_ }
+			else { $$self{stringparser}->split('word_gram', $_) }
+			# TODO honour IFS here -- POSIX tells us so
+		}
 	}
 
 	@words = map { # substitute arrays
