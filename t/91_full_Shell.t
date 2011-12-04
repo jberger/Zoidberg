@@ -6,8 +6,8 @@ use Cwd qw/cwd/;
 use Zoidberg::Shell;
 
 use File::ShareDir qw/dist_dir/;
-use Capture::Tiny 'capture_stdout';
 use Test::More;
+use Test::Output;
 
 $ENV{PWD} = cwd();
 
@@ -32,22 +32,11 @@ my $shell = Zoidberg::Shell->new(
 	}
 );
 
-sub is_zoid {
-  my ($input, $expect, $string) = @_;
-  my @args = ref $input ? @$input : ($input);
+stdout_is( sub{ $shell->shell( '{ print qq/print from perl/ }' ) }, qq/print from perl/, "perl" ); # 1
+stdout_is( sub{ $shell->shell( '{ for (1..3) { print q/yo /.($_+1) . " " } }' ) }, qq/yo 2 yo 3 yo 4 / , "perl loop" ); # 2
+stdout_is( sub{ $shell->shell( qw#blib/echo ok 5 - executable file# ) }, q/ok 5 - executable file/, "executable file" ); # 3
 
-  is( 
-    capture_stdout( sub{ $shell->shell( @args ) } ), 
-    $expect,
-    $string
-  ); 
-}
-
-is_zoid( '{ print qq/ok 1 - perl/ }', qq/ok 1 - perl\n/, "perl" ); # 1
-is_zoid( '{ for (1..3) { print q/yo /.($_+1) . " " } }', qq/yo 2 yo 3 yo 4 \n/ , "perl loop" ); # 2
-#is_zoid( [qw#blib/echo ok 3 - executable file#], q/ok 3 - executable file/, "executable file" ); # 3
-
-is_zoid( qw#echo hello#, q/hello/, "executable in path" ); # 6
+#is_zoid( qw#echo hello#, q/hello/, "executable in path" ); # 6
 #$shell->shell(qw#test 7 - rcfile with alias#); # 7
 #$shell->shell("echo \$OK8 - parameter expansion"); # 8
 #$shell->shell("echo \$ARRAY[1] 9 - parameter expansion array style"); # 9
