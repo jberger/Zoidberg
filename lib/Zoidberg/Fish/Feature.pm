@@ -39,6 +39,7 @@ sub init {
 sub add_features {
   my $plugin = shift;
   if (@feature_keywords) {
+    no strict 'refs';
     my %commands = map { $_ => \*{ __PACKAGE__ . '::' . $_ } } @feature_keywords;
     $plugin->add_commands(\%commands);
     message "Additional Perl features '$import_version' loaded\n\t'@feature_keywords' added as keywords.\n";
