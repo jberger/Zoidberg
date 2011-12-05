@@ -17,18 +17,18 @@ BEGIN {
     require feature;
 
     my $import_version = ':5.10';
-    push @_feature_keywords, qw'say state given';
+    push @feature_keywords, qw'say state given';
 
-    if ( $_feature_version >= v5.12.0 ) {
+    if ( $^V >= v5.12.0 ) {
       $import_version = ':5.12'; 
     }
 
-    if ( $_feature_version >= v5.14.0 ) {
+    if ( $^V >= v5.14.0 ) {
       $import_version = ':5.14'; # s///r
     }
 
     feature->import($import_version);
-    print STDERR "Additional Perl features '$import_version' loaded\n\t'@_feature_keywords' added as keywords.\n";
+    print STDERR "Additional Perl features '$import_version' loaded\n\t'@feature_keywords' added as keywords.\n";
 
   }
 }
