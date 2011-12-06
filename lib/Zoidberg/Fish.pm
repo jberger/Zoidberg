@@ -157,8 +157,12 @@ TODO
 sub add_events { # get my events unless @_ ?
 	my $self = shift;
 	error 'add_events needs args' unless @_;
-	my %events = ref($_[0]) ? (@{ shift() })
-		: (map {($_ => "->$$self{zoidname}->$_")} @_);
+	my %events;
+	if( my $reftype = ref($_[0]) ) {
+		%events = ( $reftype eq 'HASH' ) ? %{ shift() } : @{ shift() };
+	} else {
+		%events = (map {($_ => "->$$self{zoidname}->$_")} @_);
+	}
 	$$self{shell}{events}{$_} = [$events{$_}, $$self{zoidname}]
 		for keys %events;
 }
@@ -172,8 +176,12 @@ sub wipe_events {
 sub add_commands { # get my commands unless @_ ?
 	my $self = shift;
 	error 'add_commands needs args' unless @_;
-	my %commands = ref($_[0]) ? (@{ shift() })
-		: (map {($_ => "->$$self{zoidname}->$_")} @_);
+	my %commands; 
+	if ( my $reftype = ref($_[0]) ) {
+		%commands = ( $reftype eq 'HASH' ) ? %{ shift() } : @{ shift() };
+	} else {
+		%commands = (map {($_ => "->$$self{zoidname}->$_")} @_);
+	}
 	$$self{shell}{commands}{$_} = [$commands{$_}, $$self{zoidname}]
 		for keys %commands;
 }
