@@ -1,7 +1,7 @@
  Zoidberg - a modular perl shell, version 0.97
 ===============================================
 
-  http://zoidberg.sourceforge.net
+  http://github.com/jberger/Zoidberg
  
   Zoidberg provides a modular Perl shell written, configured, and operated 
   entirely in Perl. It aspires to be a fully operational login shell with all 
@@ -11,17 +11,17 @@
 
 INSTALLATION
 
-  First of all you need perl <www.perl.org>, it is very likely this is allready
+  First of all you need perl <www.perl.org>, it is very likely this is already
   on your system. Zoidberg is tested for perl versions 5.6.1 and 5.8.2, but
   you are welcome to also file bug reports for other versions of perl.
 
   Modules which are not in the Zoidberg package but are depended upon by 
   Zoidberg are listed in the file "Build.PL" -- these modules are
-  available from CPAN <http://cpan.org>.
+  available from CPAN <http://cpan.org> or your CPAN client (i.e. cpanm).
 
   On most clean systems you will need to install:
-    Module::Build
     Exporter::Tidy
+    File::ShareDir
 
   The following are also recommended:
     Env::PS1
@@ -71,10 +71,8 @@ CONFIGURATION
 
 BUGS AND LIMITATIONS
 
-  To submit bug reports visit http://rt.cpan.org or mail the author.
-
-  Currently we test with perl 5.8.2 and perl 5.6.2. 
-  Please _do_ bug report for other  perl versions.
+  To submit bug reports visit http://github.com/jberger/Zoidberg/issues 
+  or mail the author.
 
   The Zoidberg shell is being developed for GNU/Linux, but should also run on
   other flavours of unix. Please _do_ bug report bugs or OS dpendent problems
