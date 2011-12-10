@@ -22,7 +22,7 @@ our $VERSION = '0.97';
 my @inc = (); # You can list custom includes here
 my $cwd = cwd;
 
-unshift @INC, map {m!^/! ? $_ : "$cwd/$_" } @inc;
+unshift @INC, map { m!^/! ? $_ : "$cwd/$_" } @inc;
 
 $0 =~ s!(.*/)!!;
 if (defined $1) {
@@ -65,8 +65,8 @@ if ($$opts{help}) { # pre-emptive #1
 
 if ($$opts{_opts}) { # special switches
 	for (grep /^-[IDMm]./, @{$$opts{_opts}}) {
-		if (s/^-I//) { push @inc, $_ }
-		elsif (s/^-D//) {
+		if ( s/^-I// ) { push @inc, $_ }
+		elsif ( s/^-D// ) {
 			no strict 'refs';
 			${$_.'::DEBUG'}++;
 		}
@@ -106,7 +106,7 @@ else { $ENV{PWD} = $cwd }
 
 # parse includes
 unshift @INC,
-	map {m!^/! ? $_ : "$cwd/$_" }
+	map { m!^/! ? $_ : "$cwd/$_" }
 	grep s/^-I//, @{ $$opts{_opts} } if $$opts{_opts};
 
 # load Zoidberg.pm
