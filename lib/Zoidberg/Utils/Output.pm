@@ -164,6 +164,8 @@ sub output_sql { # kan vast schoner
 
 package Zoidberg::Utils::Output::Scalar;
 
+our $VERSION = '0.97';
+
 use overload
 	'""'   => \&scalar,
 	'bool' => \&error,

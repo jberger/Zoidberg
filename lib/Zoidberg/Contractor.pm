@@ -307,6 +307,8 @@ sub sig_by_spec {
 
 package Zoidberg::Job;
 
+our $VERSION = '0.97';
+
 use strict;
 use vars '$AUTOLOAD';
 use POSIX qw/:sys_wait_h :signal_h/;
@@ -898,6 +900,8 @@ sub status_string {
 }
 
 package Zoidberg::Job::builtin;
+
+our $VERSION = '0.97';
 
 use strict;
 use Zoidberg::Utils;

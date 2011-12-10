@@ -206,6 +206,8 @@ sub job { $Zoidberg::CURRENT->job_by_spec(pop @_) }
 
 package Zoidberg::Shell::JobsArray;
 
+our $VERSION = '0.97';
+
 sub TIEARRAY { bless \$Zoidberg::Shell::VERSION, shift } # what else is there to bless ?
 
 sub FETCH { $_[1] ? $Zoidberg::CURRENT->job_by_id($_[1]) : $$Zoidberg::CURRENT{fg_job} }

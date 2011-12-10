@@ -1260,6 +1260,8 @@ sub DESTROY {
 
 package Zoidberg::SettingsHash;
 
+our $VERSION = '0.97';
+
 sub TIEHASH {
 	my ($class, $ref, $shell) = @_;
 	bless [$ref, $shell], $class;
