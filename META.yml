@@ -34,7 +34,7 @@ provides:
     version: 0.98
   Zoidberg::Eval:
     file: lib/Zoidberg.pm
-    version: 0
+    version: 0.98
   Zoidberg::Fish:
     file: lib/Zoidberg/Fish.pm
     version: 0.98

@@ -1308,6 +1308,8 @@ sub NEXTKEY { each %{$_[0][0]} }
 
 package Zoidberg::Eval;
 
+our $VERSION = '0.98';
+
 # included to bootstrap a bit of default environment
 # for the perl syntax
 
