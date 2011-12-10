@@ -1,7 +1,7 @@
  Revision history for Zoidberg - a modular perl shell 
 ======================================================
 
-0.97 
+0.97 Sat Dec 10 2011
 	- Simplified install system
 		- Removed AppDir support
 		- Moved to File::ShareDir architecture
@@ -9,6 +9,8 @@
 	- Fixed failing tests on newer Perl versions
 	- Removed UNIVERSAL import (deprecated)
 	- zoid now respects `/usr/bin/env perl` for perlbrew's sake
+	- Plugins no longer use AutoLoader (GitHub Issue #1)
+	- New maintainer (Joel Berger) and repository (http://github.com/jberger/Zoidberg/)
 
 0.96 Sat Feb 11 2006
 	- Added utf8 decoding for file names. Submitted by Wagner Frederic.
