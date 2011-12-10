@@ -23,7 +23,7 @@ Env::PS1 0.05 - fancy prompt
 
 Term::ReadLine::Zoid 0.07 - input module
 
-Zoidberg 0.97 - the shell itself
+Zoidberg 0.98 - the shell itself
 
 =head1 AUTHOR
 

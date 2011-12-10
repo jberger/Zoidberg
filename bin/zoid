@@ -17,7 +17,7 @@ use strict;
 use Cwd qw/cwd/;
 use Pod::Usage;
 
-our $VERSION = '0.97';
+our $VERSION = '0.98';
 
 my @inc = (); # You can list custom includes here
 my $cwd = cwd;

@@ -1,6 +1,9 @@
  Revision history for Zoidberg - a modular perl shell 
 ======================================================
 
+0.98 Sat Dec 10 2011
+	- PAUSE indexer croaked since some packages lacked $VERSION info
+
 0.97 Sat Dec 10 2011
 	- Simplified install system
 		- Removed AppDir support

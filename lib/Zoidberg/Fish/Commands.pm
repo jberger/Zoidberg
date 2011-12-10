@@ -1,6 +1,6 @@
 package Zoidberg::Fish::Commands;
 
-our $VERSION = '0.97';
+our $VERSION = '0.98';
 
 use strict;
 #use AutoLoader 'AUTOLOAD';

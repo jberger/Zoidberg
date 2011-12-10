@@ -1,6 +1,6 @@
 package Zoidberg::PluginHash;
 
-our $VERSION = '0.97';
+our $VERSION = '0.98';
 
 use strict;
 use Zoidberg::Utils qw/:default read_file merge_hash list_dir/;

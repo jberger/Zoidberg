@@ -1,6 +1,6 @@
 package Zoidberg::Shell;
 
-our $VERSION = '0.97';
+our $VERSION = '0.98';
 
 use strict;
 use vars qw/$AUTOLOAD/;
@@ -206,7 +206,7 @@ sub job { $Zoidberg::CURRENT->job_by_spec(pop @_) }
 
 package Zoidberg::Shell::JobsArray;
 
-our $VERSION = '0.97';
+our $VERSION = '0.98';
 
 sub TIEARRAY { bless \$Zoidberg::Shell::VERSION, shift } # what else is there to bless ?
 
