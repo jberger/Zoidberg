@@ -15,8 +15,9 @@ http://github.com/jberger/Zoidberg";
 
 use strict;
 use vars qw/$AUTOLOAD/;
-use warnings;
-no warnings 'uninitialized'; # yes, undefined == '' == 0
+#use warnings;
+#no warnings 'uninitialized'; # yes, undefined == '' == 0
+no warnings; # I am leaving this, because I don't totally understand how warnings propagate through -- Joel
 
 require Cwd;
 require File::Glob;
