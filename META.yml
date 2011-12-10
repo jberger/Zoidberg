@@ -93,7 +93,6 @@ recommends:
   Env::PS1: 0
   Term::ReadLine::Zoid: 0
 requires:
-  AutoLoader: 0
   Cwd: 0
   Data::Dumper: 0
   Encode: 0
