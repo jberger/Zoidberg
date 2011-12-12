@@ -232,7 +232,6 @@ sub complain {
 	exit $m;	
 }
 
-# the usage message is inserted below on compile time
 __END__
 __POD__
 =head1 NAME
