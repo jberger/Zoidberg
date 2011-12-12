@@ -917,7 +917,7 @@ sub expand_path { # path expansion
 			# TODO: {x..y} brace expansion
 			$_ =~ s#(\\\\)|(?<!\\){([^,{}]*)(?<!\\)}#$1?$1:"\\{$2\\}"#ge
 				unless $$self{_settings}{voidbraces}; # brace pre-parsing
-			my @r = File::Glob::doglob($_, $opts);
+			my @r = File::Glob::bsd_glob($_, $opts);
 			debug "glob: $_ ==> ".join(', ', @r);
 			($_ !~ /^-/) ? (grep {$_ !~ /^-/} @r) : (@r);
 			# protect against implict switches as file names
