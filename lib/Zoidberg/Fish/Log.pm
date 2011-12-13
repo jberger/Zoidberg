@@ -3,7 +3,7 @@ package Zoidberg::Fish::Log;
 our $VERSION = '0.98';
 
 use strict;
-#use AutoLoader 'AUTOLOAD';
+
 use Zoidberg::Utils qw/:default path getopt output_is_captured/;
 use base 'Zoidberg::Fish';
 
@@ -201,10 +201,6 @@ sub round_up {
 	print OUT reverse @lines;
 	close OUT;
 }
-
-#1;
-
-#__END__
 
 =head1 NAME
 

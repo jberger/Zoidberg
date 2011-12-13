@@ -1,6 +1,6 @@
 {
 	module  => 'Zoidberg::Fish::Commands',
-	events  => { loadrc => 'plug' }, # allready using AutoLoader
+	events  => { loadrc => 'plug' },
 	aliases => {
 		back => 'cd -1',
 		forw => 'cd +1',

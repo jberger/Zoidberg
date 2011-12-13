@@ -461,13 +461,6 @@ stable.
 
 =item *
 
-Try to use L<AutoLoader> if you have a lot of optional functionality.
-
-( When using AutoLoader make sure your subs have names that are case-insensitive
-unique, else you'll run into problems on OS X. )
-
-=item *
-
 When you need hooks between two plugins, use a builtin command. Make sure to
 find a name for it that doesn't overload a normal system command. When you need
 various hooks, see if they can be combined in one builtin command using options
@@ -479,6 +472,10 @@ When calling a builtin as a hook the most efficient way is to use the
 C<< $shell->builtin($cmd, @args) >> method in a list context. Using this method will cause a lot of parser levels to be skipped, also the command won't be
 subject to things like the current command mode. Using list context makes the
 method return directly without bothering with overloaded objects.
+
+=item *
+
+This document used to suggest using AutoLoader when possible. That is no longer necessary nor recommended.
 
 =back
 

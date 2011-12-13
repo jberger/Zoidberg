@@ -16,7 +16,6 @@ my $build = ModuleBuildZoid->new(
 		'File::Glob' => 0,
 		'Data::Dumper' => 0,
 		'Env' => 0,
-#		'AutoLoader' => 0,
 		'Cwd' => 0,
 		'File::ShareDir' => 0,
 		'Scalar::Util' => 0,
@@ -38,11 +37,6 @@ my $build = ModuleBuildZoid->new(
 	},
 	dynamic_config => 1,
 	PL_files => {}, # make it ignore my own stuff in ./b/
-#	autosplit => [
-#		'lib/Zoidberg/Fish/Commands.pm',
-#		'lib/Zoidberg/Fish/Intel.pm',
-#		'lib/Zoidberg/Fish/Log.pm',
-#	],
 	share_dir => 'share',
 	meta_merge => {
 		resources  => {

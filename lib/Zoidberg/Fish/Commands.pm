@@ -3,7 +3,7 @@ package Zoidberg::Fish::Commands;
 our $VERSION = '0.98';
 
 use strict;
-#use AutoLoader 'AUTOLOAD';
+
 use Cwd;
 use Env qw/@CDPATH @DIRSTACK/;
 use base 'Zoidberg::Fish';
@@ -113,10 +113,6 @@ sub cd { # TODO [-L|-P] see man 1 bash
 		error "Could not change to dir: $dir";
 	}
 }
-
-#1;
-
-#__END__
 
 =item exec I<cmd>
 
