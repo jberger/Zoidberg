@@ -9,6 +9,10 @@
   objects and data structures from the command line, and allows you to run Perl 
   code within the scope of your commandline.
 
+For usage information please see the zoiduser manpage:
+
+https://github.com/jberger/Zoidberg/blob/master/man1/zoiduser.pod
+
 INSTALLATION
 
   First of all you need perl <www.perl.org>, it is very likely this is already
