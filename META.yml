@@ -25,70 +25,70 @@ provides:
     version: 0.1
   Zoidberg:
     file: lib/Zoidberg.pm
-    version: 0.98
+    version: 0.981
   Zoidberg::Contractor:
     file: lib/Zoidberg/Contractor.pm
-    version: 0.98
+    version: 0.981
   Zoidberg::DispatchTable:
     file: lib/Zoidberg/DispatchTable.pm
-    version: 0.98
+    version: 0.981
   Zoidberg::Eval:
     file: lib/Zoidberg.pm
-    version: 0.98
+    version: 0.981
   Zoidberg::Fish:
     file: lib/Zoidberg/Fish.pm
-    version: 0.98
+    version: 0.981
   Zoidberg::Fish::Commands:
     file: lib/Zoidberg/Fish/Commands.pm
-    version: 0.98
+    version: 0.981
   Zoidberg::Fish::Intel:
     file: lib/Zoidberg/Fish/Intel.pm
-    version: 0.98
+    version: 0.981
   Zoidberg::Fish::Log:
     file: lib/Zoidberg/Fish/Log.pm
-    version: 0.98
+    version: 0.981
   Zoidberg::Fish::ReadLine:
     file: lib/Zoidberg/Fish/ReadLine.pm
-    version: 0.98
+    version: 0.981
   Zoidberg::Job:
     file: lib/Zoidberg/Contractor.pm
-    version: 0.98
+    version: 0.981
   Zoidberg::Job::builtin:
     file: lib/Zoidberg/Contractor.pm
-    version: 0.98
+    version: 0.981
   Zoidberg::PluginHash:
     file: lib/Zoidberg/PluginHash.pm
-    version: 0.98
+    version: 0.981
   Zoidberg::SettingsHash:
     file: lib/Zoidberg.pm
-    version: 0.98
+    version: 0.981
   Zoidberg::Shell:
     file: lib/Zoidberg/Shell.pm
-    version: 0.98
+    version: 0.981
   Zoidberg::Shell::JobsArray:
     file: lib/Zoidberg/Shell.pm
-    version: 0.98
+    version: 0.981
   Zoidberg::StringParser:
     file: lib/Zoidberg/StringParser.pm
-    version: 0.98
+    version: 0.981
   Zoidberg::Utils:
     file: lib/Zoidberg/Utils.pm
-    version: 0.98
+    version: 0.981
   Zoidberg::Utils::Error:
     file: lib/Zoidberg/Utils/Error.pm
-    version: 0.98
+    version: 0.981
   Zoidberg::Utils::FileSystem:
     file: lib/Zoidberg/Utils/FileSystem.pm
-    version: 0.98
+    version: 0.981
   Zoidberg::Utils::GetOpt:
     file: lib/Zoidberg/Utils/GetOpt.pm
-    version: 0.98
+    version: 0.981
   Zoidberg::Utils::Output:
     file: lib/Zoidberg/Utils/Output.pm
-    version: 0.98
+    version: 0.981
   Zoidberg::Utils::Output::Scalar:
     file: lib/Zoidberg/Utils/Output.pm
-    version: 0.98
+    version: 0.981
 recommends:
   Env::PS1: 0
   Term::ReadLine::Zoid: 0
@@ -108,4 +108,4 @@ requires:
 resources:
   license: http://dev.perl.org/licenses/
   repository: http://github.com/jberger/Zoidberg
-version: 0.98
+version: 0.981

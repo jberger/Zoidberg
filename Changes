@@ -1,6 +1,9 @@
  Revision history for Zoidberg - a modular perl shell 
 ======================================================
 
+0.981 Mon Jan 9 2012
+	- use documented File::Glob::bsd_glob rather than the removed F::G::doglob
+
 0.98 Sat Dec 10 2011
 	- PAUSE indexer croaked since some packages lacked $VERSION info
 
