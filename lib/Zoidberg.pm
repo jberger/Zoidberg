@@ -668,8 +668,6 @@ sub parse_aliases { # recursive sub (aliases are 3 way recursive, 2 ways are in 
 	debug "$words[0] is aliased to: $string";
 	shift @words;
 
-=cut
-
 # saving code for later usage in pipelines
 # this is not the right place for it
 
@@ -682,8 +680,6 @@ sub parse_aliases { # recursive sub (aliases are 3 way recursive, 2 ways are in 
 		#xge );
 		@words = () if $n;
 	}
-
-=cut
 
 	my @as = @{$$meta{alias_stack}}; # force copy
 	my @l = map {
@@ -743,8 +739,6 @@ sub parse_words { # expand words etc.
 	return [$meta, @words];
 }
 
-=cut
-
 # so far no luck of getting this to work - maybe combine intgrate
 #  this with stringparser some how :S
 
@@ -771,10 +765,6 @@ sub _split_on_IFS { # bloody heavy routine for such a simple parsing rule
 	} @_;
 }
 
-=cut
-
-=cut
-
 sub expand_braces {
 	my ($self, $meta, @words) = @_;
 	my @re;
@@ -797,8 +787,6 @@ sub expand_braces {
 	}
 	return ($meta, @re);
 }
-
-=cut
 
 sub expand_param {
 	# make sure $() and @() remain untouched ... `` are considered quotes
