@@ -2,7 +2,7 @@ package Zoidberg::StringParser;
 
 # Hic sunt leones.
 
-our $VERSION = '0.98';
+our $VERSION = '0.981';
 
 use strict;
 no warnings; # can't stand the nagging

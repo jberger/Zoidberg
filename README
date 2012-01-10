@@ -1,5 +1,5 @@
- Zoidberg - a modular perl shell, version 0.98
-===============================================
+ Zoidberg - a modular perl shell, version 0.981
+================================================
 
   http://github.com/jberger/Zoidberg
  
@@ -8,6 +8,10 @@
   the features one normally expects. But it also gives direct access to Perl 
   objects and data structures from the command line, and allows you to run Perl 
   code within the scope of your commandline.
+
+For usage information please see the zoiduser manpage:
+
+https://github.com/jberger/Zoidberg/blob/master/man1/zoiduser.pod
 
 INSTALLATION
 

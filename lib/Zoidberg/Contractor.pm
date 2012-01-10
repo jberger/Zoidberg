@@ -1,6 +1,6 @@
 package Zoidberg::Contractor;
 
-our $VERSION = '0.98';
+our $VERSION = '0.981';
 
 use strict;
 use POSIX ();
@@ -307,7 +307,7 @@ sub sig_by_spec {
 
 package Zoidberg::Job;
 
-our $VERSION = '0.98';
+our $VERSION = '0.981';
 
 use strict;
 use vars '$AUTOLOAD';
@@ -901,7 +901,7 @@ sub status_string {
 
 package Zoidberg::Job::builtin;
 
-our $VERSION = '0.98';
+our $VERSION = '0.981';
 
 use strict;
 use Zoidberg::Utils;

@@ -1,6 +1,6 @@
 package Zoidberg;
 
-our $VERSION = '0.98';
+our $VERSION = '0.981';
 our $LONG_VERSION = "Zoidberg $VERSION
 
 Copyright (c) 2011 Jaap G Karssenberg and Joel Berger. All rights reserved.
@@ -1248,7 +1248,7 @@ sub DESTROY {
 
 package Zoidberg::SettingsHash;
 
-our $VERSION = '0.98';
+our $VERSION = '0.981';
 
 sub TIEHASH {
 	my ($class, $ref, $shell) = @_;
@@ -1296,7 +1296,7 @@ sub NEXTKEY { each %{$_[0][0]} }
 
 package Zoidberg::Eval;
 
-our $VERSION = '0.98';
+our $VERSION = '0.981';
 
 # included to bootstrap a bit of default environment
 # for the perl syntax
