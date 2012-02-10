@@ -1,5 +1,6 @@
 
 use strict;
+use Config;
 
 print "1..29\n";
 
@@ -15,7 +16,11 @@ $ENV{ARRAY} = join ':', qw/f00 ok b4r/;
 $SIG{PIPE} = 'IGNORE';
 
 $|++;
-my $zoid = "| $^X script/zoid -o data_dirs=share -o rcfiles=../t/zoidrc";
+
+# recommended over $^X by http://wiki.cpantesters.org/wiki/CPANAuthorNotes 
+my $perlpath = $Config{perlpath};
+
+my $zoid = "| $perlpath script/zoid -o data_dirs=share -o rcfiles=../t/zoidrc";
 
 open ZOID, $zoid;
 
