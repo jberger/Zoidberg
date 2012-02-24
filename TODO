@@ -1,0 +1,4 @@
+#get path seperator from Config:
+use Config;
+my $separator = $Config{path_sep};
+
